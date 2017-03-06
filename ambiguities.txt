@@ -3,3 +3,15 @@ Parser Specification Ambiguities
 Paragraph : 4
 Problem   : It is not specified whether keywords can be used as identifiers.
 Solution  : It is uncommon for languages to allow such so we will not allow keywords as identifiers. 
+
+Paragraph : 7
+Problem   : It is not specified whether an integer can begin with a sequence of 0’s.
+Solution  : Some languages like C, use a leading 0 to denote an octal integer, rather than being equivalent to the same integer without the leading 0, and as such we will not be accepting leading 0’s.
+
+Paragraph : 7
+Problem   : It is not specified exactly what the underscore means in the rational literal, so it is unclear whether the program will accept multiple underscores.
+Solution  : We will assume the underscore is in place for the use of mixed fractions, where the integer before the underscore is the whole part of the fraction, and the part after the underscore is the fraction.
+
+Paragraph : 9
+Problem   : It is not clear whether aggregate data types allow aggregate data types nested within them, other than the example given when declared as a top.
+Solution  : We will be allowing nested aggregate data types as most programming languages allow it.

@@ -41,29 +41,35 @@ import java.util.*
 
 LineTerminator	= \r|\n|\r\n
 WhiteSpace    	= {LineTerminator} | [ \t\f]
-Semicolon		= .
+Semicolon		= ";"
 
 // Literals
-LiterNull		= .
+LiterNull		= "null"
 
 // Key words
 
-KeywordAlias			= .
-KeywordDict				= .
-KeywordSeq				= .
-KeywordTdef				= .
-KeywordFdef				= .
-KeywordIf				= .
-KeywordIfTerminator		= .
-KeywordThen				= .
-KeywordElse				= .
-KeywordLoop				= .
-KeywordLoopTerminator	= .
-KeywordReturn			= .
-KeywordRead				= .
-KeywordPrint 			= .
-KeywordBreak			= .
-Keyword					= .
+KeywordDict				= "dict"
+KeywordSeq				= "seq"
+KeywordDataType         = KeywordDict | KeywordSeq
+
+KeywordAlias			= "alias"
+KeywordTdef				= "tdef"
+KeywordFdef				= "fdef"
+KeywordDeclaration 		= KeywordAlias | KeywordTdef | KeywordFdef
+
+KeywordIf				= "if"
+KeywordIfTerminator		= "fi"
+KeywordThen				= "then"
+KeywordElse				= "else"
+KeywordLoop				= "loop"
+KeywordLoopTerminator	= "pool"
+KeywordReturn			= "return"
+KeywordRead				= "read"
+KeywordPrint 			= "print"
+KeywordBreak			= "break"
+KeywordStatement		= KeywordIf | KeywordIfTerminator | KeywordThen | KeywordElse | KeywordLoop | KeywordLoopTerminator | KeywordReturn | KeywordPrint | KeywordBreak
+
+Keyword					= LineTerminator | WhiteSpace | Semicolon | LiterNull | KeywordDataType | KeywordDeclaration | KeywordStatement
 
 //Paragraph 3 -----------------------------------------------
 // ----------------------------------------------------------
@@ -72,29 +78,31 @@ CommentMultiline  = .
 Comment
 
 //Paragraph 4 -----------------------------------------------
-// ----------------------------------------------------------
+// ----------------------------------------------------------	
 Identifier = .
 
 //Paragraph 5 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeChar		= .
-LiteralChar   		= .
+DataTypeChar		= "char"
+LiteralChar   		= "'([^'\\\n]|\\.)'"
+LegalCharacters		= "([^'\\\n]|\\.)"			
 
 //Paragraph 6 -----------------------------------------------
 // ----------------------------------------------------------
-ValueBool = .
+ValueBool = "T" | "F"
 
 //Paragraph 7 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeBool  = .
-DataTypeInt   = .
-DataTypeRat   = .
-DataTypeFloat = .
+DataTypeBool  = "bol"
+DataTypeInt   = "int"
+DataTypeRat   = "rat"
+DataTypeFloat = "float"
 
-LiteralInt      = .
-LiteralRational = .
-LiteralFloat    = .
-LiteralNumber   = .
+LiteralPosInt   = "0 | [1-9][0-9]*"
+LiteralInt      = "0 | -?[1-9][0-9]*"
+LiteralRational = [LiteralInt / LiteralPosInt] | [LiteralInt _ LiteralPosInt / LiteralPosInt]
+LiteralFloat    = [LiteralInt . LiteralPosInt]
+LiteralNumber   = LiteralInt | LiteralRational | LiteralFloat
 
 //Paragraph 8 -----------------------------------------------
 // ----------------------------------------------------------
@@ -109,19 +117,18 @@ LiteralEmptyDictionary 	= .
 
 //Paragraph 9 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeSequence 	= .
-LiteralSequence    	= .
-LiteralEmptyList	= .
+DataTypeSequence 	= KeywordSeq < DataType >
+LiteralSequence = "[" (ArbitraryText) ("," ArbitraryText)* "]"
+LiteralEmptyList	= "[]"
 
 //Paragraph 10 ----------------------------------------------
 // ----------------------------------------------------------
 LiteralString			= .
 SequenceLengthParameter	= .
 
-
 // Table 1 --------------------------------------------------
 // ----------------------------------------------------------
-DataTypePrimitive = .
+DataTypePrimitive = DataTypeBool | DataTypeInt | DataTypeRat | DataTypeFloat | DataTypeChar
 DataTypeAggregate = .
 DataType          = .
 
@@ -224,7 +231,7 @@ StatementReturn			= .
 Statement 				= .
 StatementBody			= .
 
-//Paragraph 17 ----------------------------------------------
+// Paragraph 17 ----------------------------------------------
 // ----------------------------------------------------------
 StatementInbuiltTypeDeclarationAndInitialisation		= .
 StatementUserDefinedTypeDeclarationAndInitialisation	= .
