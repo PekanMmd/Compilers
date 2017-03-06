@@ -41,10 +41,10 @@ import java.util.*
 
 LineTerminator	= \r|\n|\r\n
 WhiteSpace    	= {LineTerminator} | [ \t\f]
-Semicolon		= .
+Semicolon		= ";"
 
 // Literals
-LiterNull		= .
+LiterNull		= "null"
 
 // Key words
 
@@ -67,13 +67,13 @@ Keyword					= .
 
 //Paragraph 3 -----------------------------------------------
 // ----------------------------------------------------------
-CommentSingleLine = .
-CommentMultiline  = .
-Comment
+CommentSingleLine = "#".*"\n"
+CommentMultiline  = "/#" ~"#/"
+Comment 		= CommentMultiline | CommentSingleLine
 
 //Paragraph 4 -----------------------------------------------
 // ----------------------------------------------------------
-Identifier = .
+Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*) (!Keyword)
 
 //Paragraph 5 -----------------------------------------------
 // ----------------------------------------------------------
@@ -98,13 +98,13 @@ LiteralNumber   = .
 
 //Paragraph 8 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeDictionary 		= .
-LiteralDictionary  		= .
+DataTypeDictionary 		= dict<DataTypePrimitive, DataTypePrimitive>
+LiteralDictionary  		= "{"((DictionaryType:DictionaryType)*)"}"
 
-DataTypeTop       		= .
-LiteralTop				= .
+DataTypeTop       		= "top"
+LiteralTop				= (LiteralRational | LiteralNumber | LiteralFloat | LiteralInt)
 
-LiteralEmptyDictionary 	= .
+LiteralEmptyDictionary 	= "{" (^DictionaryType) "}"
 
 
 //Paragraph 9 -----------------------------------------------
@@ -115,8 +115,9 @@ LiteralEmptyList	= .
 
 //Paragraph 10 ----------------------------------------------
 // ----------------------------------------------------------
-LiteralString			= .
+LiteralString			= "\"" LegalCharacters* "\""
 SequenceLengthParameter	= .
+ArbitraryText			= LegalCharacters*
 
 
 // Table 1 --------------------------------------------------
