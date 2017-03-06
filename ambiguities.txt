@@ -1,0 +1,5 @@
+Parser Specification Ambiguities
+
+Paragraph : 4
+Problem   : It is not specified whether keywords can be used as identifiers.
+Solution  : It is uncommon for languages to allow such so we will not allow keywords as identifiers. 
