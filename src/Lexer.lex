@@ -124,56 +124,58 @@ LiteralEmptyList	= "[]"
 //Paragraph 10 ----------------------------------------------
 // ----------------------------------------------------------
 LiteralString			= "\"" LegalCharacters* "\""
-SequenceLengthParameter	= .
+SequenceLengthParameter	= ".length"
 ArbitraryText			= LegalCharacters*
 
 // Table 1 --------------------------------------------------
 // ----------------------------------------------------------
 DataTypePrimitive = DataTypeBool | DataTypeInt | DataTypeRat | DataTypeFloat | DataTypeChar
-DataTypeAggregate = .
-DataType          = .
+DataTypeAggregate = DataTypeDictionary | DataTypeSequence
+DataType          = DataTypePrimitive | DataTypeAggregate
 
 
 // Table 2 --------------------------------------------------
 // ----------------------------------------------------------
 
 // boolean operators
-OperatorNot		= .
-OperatorAnd		= .
-OperatorOr		= .
-OperatorImplies	= .
-BooleanOperator  = .
+//Question surely if it sees these operators in text so we need it to say not in string?
+//NotInString 	= 
+OperatorNot		= "!"
+OperatorAnd		= "&&" //"&" "&" ??
+OperatorOr		= "||"
+OperatorImplies	= "=>"
+BooleanOperator  = (OperatorNot | OperatorAnd | OperatorOr | OperatorImplies)
 
 // numeric operators
-OperatorPlus			= .
-OperatorMinus			= .
-OperatorMultiplication	= .
-OperatorDivision		= .
-OperatorPower			= .
-NumericaOperator		= .
+OperatorPlus			= "+"
+OperatorMinus			= "-"
+OperatorMultiplication	= "*"
+OperatorDivision		= "/"
+OperatorPower			= "^"
+NumericaOperator		= (OperatorPlus | OperatorMinus | OperatorDivision | OperatorPower)
 
 // dicionary/sequence operators
-OperatorIn 	= .
+OperatorIn 	= "in"
 
 // dictionary operators
-OperatorDictionaryKey 	= .
-DictionaryOperator		= .
+OperatorDictionaryKey 	= //d[k]
+DictionaryOperator		= (OperatorIn | OperatorDictionaryKey)
 
 // sequence operators
-OperatorSequenceConcatenation	= .
-OperatorSequenceIndex			= .
-OperatorSequenceLeftSlice		= .
-OperatorSequenceRightSlice		= .
-OperatorSequenceDualSlice		= .
-OperatorSequenceBoundlessSlice	= .
-SequenceOperator					= .
+OperatorSequenceConcatenation	= "::"
+OperatorSequenceIndex			= ArbitraryText "[" [0-9]* "]"
+OperatorSequenceLeftSlice		= ArbitraryText "[" [0-9]* ":" "]"
+OperatorSequenceRightSlice		= ArbitraryText "[" ":" [0-9]* "]"
+OperatorSequenceDualSlice		= ArbitraryText "[" [0-9]* ":" [0-9]* "]"
+OperatorSequenceBoundlessSlice	= . //huh?
+SequenceOperator				= (OperatorIn | OperatorSequenceConcatenation | OperatorSequenceIndex | OperatorSequenceLeftSlice | OperatorSequenceRightSlice | OperatorSequenceDualSlice | OperatorSequenceBoundlessSlice)
 
 // comparison operators
-OperatorLessThan				= .
-OperatorLessThanOrEqual		= .
-OperatorEquality				= .
-OperatorNotEqual				= .
-ComparisonOperator			= .
+OperatorLessThan				= "<"
+OperatorLessThanOrEqual		= "<="
+OperatorEquality				= "="
+OperatorNotEqual				= OperatorNot OperatorEquality  //"!="
+ComparisonOperator			= (OperatorLessThan | OperatorLessThanOrEqual | OperatorEquality | OperatorNotEqual)
 
 OperatorInfix		= .
 OperatorPostfix		= .
