@@ -138,8 +138,7 @@ DataType          = DataTypePrimitive | DataTypeAggregate
 // ----------------------------------------------------------
 
 // boolean operators
-//Question surely if it sees these operators in text so we need it to say not in string?
-//NotInString 	= 
+
 OperatorNot		= "!"
 OperatorAnd		= "&&" //"&" "&" ??
 OperatorOr		= "||"
@@ -167,7 +166,7 @@ OperatorSequenceIndex			= ArbitraryText "[" [0-9]* "]"
 OperatorSequenceLeftSlice		= ArbitraryText "[" [0-9]* ":" "]"
 OperatorSequenceRightSlice		= ArbitraryText "[" ":" [0-9]* "]"
 OperatorSequenceDualSlice		= ArbitraryText "[" [0-9]* ":" [0-9]* "]"
-OperatorSequenceBoundlessSlice	= . //huh?
+OperatorSequenceBoundlessSlice	= ArbitraryText "[" ":" "]"
 SequenceOperator				= (OperatorIn | OperatorSequenceConcatenation | OperatorSequenceIndex | OperatorSequenceLeftSlice | OperatorSequenceRightSlice | OperatorSequenceDualSlice | OperatorSequenceBoundlessSlice)
 
 // comparison operators
