@@ -93,7 +93,7 @@ ValueBool = "T" | "F"
 
 //Paragraph 7 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeBool  = "bol"
+DataTypeBool  = "bool"
 DataTypeInt   = "int"
 DataTypeRat   = "rat"
 DataTypeFloat = "float"
@@ -107,10 +107,10 @@ LiteralNumber   = LiteralInt | LiteralRational | LiteralFloat
 //Paragraph 8 -----------------------------------------------
 // ----------------------------------------------------------
 DataTypeDictionary 		= dict<DataTypePrimitive, DataTypePrimitive>
-LiteralDictionary  		= "{"((DictionaryType:DictionaryType)*)"}"
+LiteralDictionary  		= "{"((DictionaryType : DictionaryType)*)"}"
 
 DataTypeTop       		= "top"
-LiteralTop				= (LiteralRational | LiteralNumber | LiteralFloat | LiteralInt)
+LiteralTop				= (LiteralNumber)   
 
 LiteralEmptyDictionary 	= "{" (^DictionaryType) "}"
 
@@ -118,21 +118,24 @@ LiteralEmptyDictionary 	= "{" (^DictionaryType) "}"
 //Paragraph 9 -----------------------------------------------
 // ----------------------------------------------------------
 DataTypeSequence 	= KeywordSeq < DataType >
-LiteralSequence = "[" (ArbitraryText) ("," ArbitraryText)* "]"
+LiteralSequence = "[" (ArbitraryText) ("," ArbitraryText)* "]"        
 LiteralEmptyList	= "[]"
 
 //Paragraph 10 ----------------------------------------------
 // ----------------------------------------------------------
 LiteralString			= "\"" LegalCharacters* "\""
 SequenceLengthParameter	= .
-ArbitraryText			= LegalCharacters*
+ArbitraryText			= LegalCharacters+      
 
 // Table 1 --------------------------------------------------
 // ----------------------------------------------------------
 DataTypePrimitive = DataTypeBool | DataTypeInt | DataTypeRat | DataTypeFloat | DataTypeChar
-DataTypeAggregate = .
-DataType          = .
+DataTypeAggregate = DataTypeDictionary | DataTypeSequence
+DataType          = DataTypePrimitive | DataTypeAggregate | DataTypeTop
 
+LiteralPrimitive  = ValueBool | LiteralNumber | LiteralChar
+LiteralAggregate  = LiteralDictionary | LiteralEmptyDictionary | LiteralEmptyList | LiteralSequence | LiteralString
+Literal           = LiteralPrimitive | LiteralAggregate              
 
 // Table 2 --------------------------------------------------
 // ----------------------------------------------------------
@@ -180,9 +183,9 @@ OperatorPostfix		= .
 
 //Paragraph 13 ----------------------------------------------
 // ----------------------------------------------------------
-DeclarationVariable		= .
-DeclarationType			= .
-DeclarationTypeAlias	= .
+DeclarationVariable		= Identifier : DataType := Literal ";"           
+DeclarationType			= KeywordTdef ArbitraryText "{" (ArbitraryText : DataType) (, ArbitraryText : DataType)* "}" ";"
+DeclarationTypeAlias	= KeywordAlias DataType DataType ";" 
 
 //Paragraph 14 ----------------------------------------------
 // ----------------------------------------------------------
