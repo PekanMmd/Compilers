@@ -50,12 +50,12 @@ LiterNull		= "null"
 
 KeywordDict				= "dict"
 KeywordSeq				= "seq"
-KeywordDataType         = KeywordDict | KeywordSeq
+KeywordDataType         = {KeywordDict} | {KeywordSeq}
 
 KeywordAlias			= "alias"
 KeywordTdef				= "tdef"
 KeywordFdef				= "fdef"
-KeywordDeclaration 		= KeywordAlias | KeywordTdef | KeywordFdef
+KeywordDeclaration 		= {KeywordAlias} | {KeywordTdef} | {KeywordFdef}
 
 KeywordIf				= "if"
 KeywordIfTerminator		= "fi"
@@ -67,19 +67,18 @@ KeywordReturn			= "return"
 KeywordRead				= "read"
 KeywordPrint 			= "print"
 KeywordBreak			= "break"
-KeywordStatement		= KeywordIf | KeywordIfTerminator | KeywordThen | KeywordElse | KeywordLoop | KeywordLoopTerminator | KeywordReturn | KeywordPrint | KeywordBreak
-
-Keyword					= LineTerminator | WhiteSpace | Semicolon | LiterNull | KeywordDataType | KeywordDeclaration | KeywordStatement
+KeywordStatement		= {KeywordIf} | {KeywordIfTerminator} | {KeywordThen} | {KeywordElse} | {KeywordLoop} | {KeywordLoopTerminator} | {KeywordReturn} | {KeywordPrint} | {KeywordBreak}
+Keyword					= {LineTerminator} | {WhiteSpace} | {Semicolon} | {LiterNull} | {KeywordDataType} | {KeywordDeclaration} | {KeywordStatement}
 
 //Paragraph 3 -----------------------------------------------
 // ----------------------------------------------------------
 CommentSingleLine = "#".*"\n"
 CommentMultiline  = "/#" ~"#/"
-Comment 		= CommentMultiline | CommentSingleLine
+Comment 		= {CommentMultiline} | {CommentSingleLine}
 
 //Paragraph 4 -----------------------------------------------
 // ----------------------------------------------------------
-Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*) (!Keyword)
+Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*) (!{Keyword})
 
 //Paragraph 5 -----------------------------------------------
 // ----------------------------------------------------------
@@ -100,42 +99,42 @@ DataTypeFloat = "float"
 
 LiteralPosInt   = "0 | [1-9][0-9]*"
 LiteralInt      = "0 | -?[1-9][0-9]*"
-LiteralRational = [LiteralInt / LiteralPosInt] | [LiteralInt _ LiteralPosInt / LiteralPosInt]
-LiteralFloat    = [LiteralInt . LiteralPosInt]
-LiteralNumber   = LiteralInt | LiteralRational | LiteralFloat
+LiteralRational = [{LiteralInt} / {LiteralPosInt}] | [{LiteralInt} _ {LiteralPosInt} / {LiteralPosInt}]
+LiteralFloat    = [{LiteralInt} . {LiteralPosInt}]
+LiteralNumber   = {LiteralInt} | {LiteralRational} | {LiteralFloat}
 
 //Paragraph 8 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeDictionary 		= dict<DataTypePrimitive, DataTypePrimitive>
-LiteralDictionary  		= "{"((DictionaryType : DictionaryType)*)"}"
+DataTypeDictionary 		= dict<{DataTypePrimitive}, {DataTypePrimitive}>
+LiteralDictionary  		= "{"(({DictionaryType} : {DictionaryType})*)"}"
 
 DataTypeTop       		= "top"
-LiteralTop				= (LiteralNumber)   
+LiteralTop				= ({LiteralNumber})   
 
-LiteralEmptyDictionary 	= "{" (^DictionaryType) "}"
+LiteralEmptyDictionary 	= "{" (^{DictionaryType}) "}"
 
 
 //Paragraph 9 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeSequence 	= KeywordSeq < DataType >
-LiteralSequence = "[" (ArbitraryText) ("," ArbitraryText)* "]"        
+DataTypeSequence 	= {KeywordSeq} < {DataType} >
+LiteralSequence = "[" ({ArbitraryText}) ("," {ArbitraryText})* "]"        
 LiteralEmptyList	= "[]"
 
 //Paragraph 10 ----------------------------------------------
 // ----------------------------------------------------------
-LiteralString			= "\"" LegalCharacters* "\""
+LiteralString			= "\"" {LegalCharacters}* "\""
 SequenceLengthParameter	= ".length"
-ArbitraryText			= LegalCharacters+      
+ArbitraryText			= {LegalCharacters}+      
 
 // Table 1 --------------------------------------------------
 // ----------------------------------------------------------
-DataTypePrimitive = DataTypeBool | DataTypeInt | DataTypeRat | DataTypeFloat | DataTypeChar
-DataTypeAggregate = DataTypeDictionary | DataTypeSequence
-DataType          = DataTypePrimitive | DataTypeAggregate
+DataTypePrimitive = {DataTypeBool} | {DataTypeInt} | {DataTypeRat} | {DataTypeFloat} | {DataTypeChar}
+DataTypeAggregate = {DataTypeDictionary} | {DataTypeSequence}
+DataType          = {DataTypePrimitive} | {DataTypeAggregate}
 
-LiteralPrimitive  = ValueBool | LiteralNumber | LiteralChar
-LiteralAggregate  = LiteralDictionary | LiteralEmptyDictionary | LiteralEmptyList | LiteralSequence | LiteralString
-Literal           = LiteralPrimitive | LiteralAggregate              
+LiteralPrimitive  = {ValueBool} | {LiteralNumber} | {LiteralChar}
+LiteralAggregate  = {LiteralDictionary} | {LiteralEmptyDictionary} | {LiteralEmptyList} | {LiteralSequence} | {LiteralString}
+Literal           = {LiteralPrimitive} | {LiteralAggregate}             
 
 // Table 2 --------------------------------------------------
 // ----------------------------------------------------------
@@ -146,7 +145,7 @@ OperatorNot		= "!"
 OperatorAnd		= "&&" //"&" "&" ??
 OperatorOr		= "||"
 OperatorImplies	= "=>"
-BooleanOperator  = (OperatorNot | OperatorAnd | OperatorOr | OperatorImplies)
+BooleanOperator  = ({OperatorNot} | {OperatorAnd} | {OperatorOr} | {OperatorImplies})
 
 // numeric operators
 OperatorPlus			= "+"
@@ -154,44 +153,44 @@ OperatorMinus			= "-"
 OperatorMultiplication	= "*"
 OperatorDivision		= "/"
 OperatorPower			= "^"
-NumericaOperator		= (OperatorPlus | OperatorMinus | OperatorDivision | OperatorPower)
+NumericaOperator		= ({OperatorPlus} | {OperatorMinus} | {OperatorDivision} | {OperatorPower})
 
 // dicionary/sequence operators
 OperatorIn 	= "in"
 
 // dictionary operators
 OperatorDictionaryKey 	= //d[k]
-DictionaryOperator		= (OperatorIn | OperatorDictionaryKey)
+DictionaryOperator		= ({OperatorIn} | {OperatorDictionaryKey})
 
 // sequence operators
 OperatorSequenceConcatenation	= "::"
-OperatorSequenceIndex			= ArbitraryText "[" [0-9]* "]"
-OperatorSequenceLeftSlice		= ArbitraryText "[" [0-9]* ":" "]"
-OperatorSequenceRightSlice		= ArbitraryText "[" ":" [0-9]* "]"
-OperatorSequenceDualSlice		= ArbitraryText "[" [0-9]* ":" [0-9]* "]"
-OperatorSequenceBoundlessSlice	= ArbitraryText "[" ":" "]"
-SequenceOperator				= (OperatorIn | OperatorSequenceConcatenation | OperatorSequenceIndex | OperatorSequenceLeftSlice | OperatorSequenceRightSlice | OperatorSequenceDualSlice | OperatorSequenceBoundlessSlice)
+OperatorSequenceIndex			= {ArbitraryText} "[" [0-9]* "]"
+OperatorSequenceLeftSlice		= {ArbitraryText} "[" [0-9]* ":" "]"
+OperatorSequenceRightSlice		= {ArbitraryText} "[" ":" [0-9]* "]"
+OperatorSequenceDualSlice		= {ArbitraryText} "[" [0-9]* ":" [0-9]* "]"
+OperatorSequenceBoundlessSlice	= {ArbitraryText} "[" ":" "]"
+SequenceOperator				= ({OperatorIn} | {OperatorSequenceConcatenation} | {OperatorSequenceIndex} | {OperatorSequenceLeftSlice} | {OperatorSequenceRightSlice} | {OperatorSequenceDualSlice} | {OperatorSequenceBoundlessSlice})
 
 // comparison operators
 OperatorLessThan				= "<"
 OperatorLessThanOrEqual		= "<="
 OperatorEquality				= "="
-OperatorNotEqual				= OperatorNot OperatorEquality  //"!="
-ComparisonOperator			= (OperatorLessThan | OperatorLessThanOrEqual | OperatorEquality | OperatorNotEqual)
+OperatorNotEqual				= {OperatorNot} {OperatorEquality}  //"!="
+ComparisonOperator			= ({OperatorLessThan} | {OperatorLessThanOrEqual} | {OperatorEquality} | {OperatorNotEqual})
 
 OperatorInfix		= .
 OperatorPostfix		= .
 
 //Paragraph 13 ----------------------------------------------
 // ----------------------------------------------------------
-DeclarationVariable		= Identifier : DataType := Literal ";"           
-DeclarationType			= KeywordTdef ArbitraryText "{" (ArbitraryText : DataType) (, ArbitraryText : DataType)* "}" ";"
-DeclarationTypeAlias	= KeywordAlias DataType DataType ";" 
+DeclarationVariable		= {Identifier} : {DataType} := {Literal} ";"           
+DeclarationType			= {KeywordTdef} {ArbitraryText} "{" ({ArbitraryText} : {DataType}) (, {ArbitraryText} : {DataType})* "}" ";"
+DeclarationTypeAlias	= {KeywordAlias} {DataType} {DataType} ";" 
 
 //Paragraph 14 ----------------------------------------------
 // ----------------------------------------------------------
 DeclarationFunctionParameter		= .
-DeclarationFunctionParameteList		= .
+DeclarationFunctionParameterList	= .
 DeclarationLocalVariable			= .
 DeclarationLocalVariableList		= .
 DeclarationFunctionBody				= .
@@ -252,19 +251,4 @@ StatementPredicatedFunctionCall		= .
 // ----------------------------------------------------------
 
 . {System.out.println("yo");}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
