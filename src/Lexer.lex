@@ -46,31 +46,7 @@ class Yytoken {
 // ----------------------------------------------------------
 // States
 // ----------------------------------------------------------
-
-%state  STATE_IF, STATE_FDEF, STATE_TDEF, STATE_LOOP
 %xstate STATE_COMMENT_SINGLE, STATE_COMMENT_MULTI
-
-// ----------------------------------------------------------
-// State Stack
-// ----------------------------------------------------------
-%{
-	private Stack<Integer> state_stack = new Stack<Integer>();
-
-	public void yypushState(int newState) {
-	  state_stack.push(yystate());
-	  yybegin(newState);
-	}
-
-	public void yypopState() {
-
-		state_stack.pop()
-		if (state_stack.empty()) {
-			yybegin(YYINITIAL)
-		} else {
-			yybegin(stack.peek());
-		}
-	}
-%}
 
 // ----------------------------------------------------------
 // Regex Macros
@@ -309,27 +285,21 @@ StatementPredicatedFunctionCall		= .
 
 
 // ----------------------------------------------------------
-// State begins
-// ----------------------------------------------------------
-{KeywordIf} 	{ yypushState(STATE_IF); }
-{KeywordLoop} 	{ yypushState(STATE_LOOP); }
-
-{Keyword} { yypushState(STATE_IF); }
-
-// ----------------------------------------------------------
-// State ends
-// ----------------------------------------------------------
-
-{LiteralInt} { return new Yytoken(TokenType.INT,yytext());}
-
-// ----------------------------------------------------------
 // Initial State
 // ----------------------------------------------------------
 <YYINITIAL> {tdef} { yypushState(STATE_TDEF); return new Yytoken(TokenType.TDEF); }
 
 
+// ----------------------------------------------------------
+// Tokeniser
+// ----------------------------------------------------------
+{LiteralInt} { return new Yytoken(TokenType.INT,yytext());}
 
-<YYINITIAL,STATE_COMMENT_MULTI,STATE_COMMENT_SINGLE> <<EOF>> {return new Yytoken(TokenType.EOF);}
+// ----------------------------------------------------------
+// End of file
+// ----------------------------------------------------------
+<YYINITIAL,STATE_COMMENT_SINGLE> <<EOF>> {return new Yytoken(TokenType.EOF);}
+
 . {
 	report_error(
          "Syntax error at line " + (yyline+1) + ", column "
