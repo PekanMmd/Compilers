@@ -6,6 +6,33 @@
 
 import java.util.*
 
+class TokenType {
+
+	private final static int NONE 		= 0;
+	private final static int IF 		= 1;
+}
+
+class Yytoken {
+
+	Object 	value;
+	int 	tokenType;
+	int 	line;
+	int 	column;
+
+	public Yytoken(int tokenType) {
+		this.tokenType 	= tokenType;
+		this.line 		= Yyline;
+		this.column 	= Yycolumn;
+	}
+
+	public Yytoken(int tokenType, Object value) {
+		this.tokenType 	= tokenType;
+		this.value 		= value;
+		this.line 		= Yyline;
+		this.column 	= Yycolumn;
+	}
+}
+
 %%
 // ----------------------------------------------------------
 // Options and Declarations
@@ -17,34 +44,43 @@ import java.util.*
 %column
 
 // ----------------------------------------------------------
-// Lexer Code
+// States
+// ----------------------------------------------------------
+
+%state STATE_IF, STATE_FDEF, STATE_TDEF, STATE_COMMENT, STATE_LOOP
+
+// ----------------------------------------------------------
+// Class code
 // ----------------------------------------------------------
 %{
-	boolean programContainsMainFunction;
-%}
+	private Stack<Integer> state_stack = new Stack<Integer>();
 
-//Paragraph 2 -----------------------------------------------
-// ----------------------------------------------------------
-%init{
-	programContainsMainFunction = false;
-%init}
-
-%eofval{
-	if (!programContainsMainFunction) {
-		System.out.println("error: no main method");
+	public void yypushState(int newState) {
+	  state_stack.push(yystate());
+	  yybegin(newState);
 	}
-%eofval}
+
+	public void yypopState() {
+
+		state_stack.pop()
+		if (state_stack.empty()) {
+			yybegin(YYINITIAL)
+		} else {
+			yybegin(stack.peek());
+		}
+	}
+%}
 
 // ----------------------------------------------------------
 // Regex Macros
 // ----------------------------------------------------------
 
-LineTerminator	= \r|\n|\r\n
+LineTerminator	= "\r"|"\n"|"\r\n"
 WhiteSpace    	= {LineTerminator} | [ \t\f]
-Semicolon		= .
+Semicolon		= ";"
 
 // Literals
-LiterNull		= .
+LiteralNull		= "null"
 
 // Key words
 
@@ -69,7 +105,7 @@ Keyword					= .
 // ----------------------------------------------------------
 CommentSingleLine = .
 CommentMultiline  = .
-Comment
+Comment 			= CommentMultiline | CommentSingleLine
 
 //Paragraph 4 -----------------------------------------------
 // ----------------------------------------------------------
@@ -239,9 +275,15 @@ StatementPredicatedFunctionCall		= .
 // Lexical Rules
 // ----------------------------------------------------------
 
-. {System.out.println("yo");}
+<YYINITIAL>
 
+{WhiteSpace} {}
 
+. {
+	report_error(
+         "Syntax error at line " + (yyline+1) + ", column "
+		+ yycolumn, null );
+  }
 
 
 
