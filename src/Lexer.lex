@@ -215,13 +215,15 @@ SequenceOperator				= ({OperatorIn} | {OperatorSequenceConcatenation} | {Operato
 
 // comparison operators
 OperatorLessThan				= "<"
-OperatorLessThanOrEqual		= "<="
+OperatorLessThanOrEqual		    = "<="
 OperatorEquality				= "="
-OperatorNotEqual				= {OperatorNot} {OperatorEquality}  //"!="
+OperatorNotEqual				= "!="
 ComparisonOperator			= ({OperatorLessThan} | {OperatorLessThanOrEqual} | {OperatorEquality} | {OperatorNotEqual})
 
-OperatorInfix		= .
-OperatorPostfix		= .
+
+OperatorPrefix      = OperatorNot
+OperatorInfix		= ComparisonOperator | OperatorAnd | OperatorOr | OperatorImplies | NumericaOperator | OperatorIn | OperatorSequenceConcatenation
+OperatorPostfix		= OperatorSequenceConcatenation | OperatorSequenceIndex | OperatorSequenceLeftSlice | OperatorSequenceRightSlice | OperatorSequenceDualSlice | OperatorSequenceBoundlessSlice | OperatorDictionaryKey
 
 //Paragraph 13 ----------------------------------------------
 // ----------------------------------------------------------
@@ -247,22 +249,22 @@ DeclarationFunction 				= .
 
 //Paragraph 15 ----------------------------------------------
 // ----------------------------------------------------------
-Literal 							= .
-FunctionPredicate					= .
+FunctionPredicate					= "?" Expression "?"
 
-ExpressionFieldReference			= .
-ExpressionInfixOperation			= .
-ExpressionPostfixOperation			= .
-ExpressionPredicatedFunctionCall	= .
+ExpressionFieldReference			= Identifier "." Identifier
+ExpressionPrefixOperation			= OperatorInfix ArbitraryText
+ExpressionInfixOperation			= ArbitraryText OperatorInfix ArbitraryText
+ExpressionPostfixOperation			= Identifier OperatorPostfix 
+ExpressionPredicatedFunctionCall	= FunctionPredicate Identifier "(" DeclarationFunctionParameteList ")"
 
-Expression 							= .
+Expression 							= ExpressionFieldReference | ExpressionPrefixOperation | ExpressionInfixOperation | ExpressionPostfixOperation | ExpressionPredicatedFunctionCall
 
 //Paragraph 16 ----------------------------------------------
 // ----------------------------------------------------------
 // Table 4 --------------------------------------------------
 // ----------------------------------------------------------
-OperatorAssignment		= .
-ExpressionList			= .
+OperatorAssignment		= ":="
+ExpressionList			= Expression (, Expression)*
 
 StatementAssignment		= .
 StatementInput			= .
