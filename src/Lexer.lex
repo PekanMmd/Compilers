@@ -61,6 +61,12 @@ class TokenType {
 	private final static int STRING 	= 50;
 	private final static int CHAR   	= 51;
 	private final static int QUES_MARK 	= 52;
+	private final static int MAIN 	    = 53;
+	private final static int CURLY_R 	= 54;
+	private final static int CURLY_L 	= 55;
+	private final static int ANGLE_L 	= 56;
+	private final static int ANGLE_R 	= 57;
+
 
 }
 
@@ -147,6 +153,7 @@ KeywordTdef				= "tdef"
 KeywordFdef				= "fdef"
 KeywordDeclaration 		= {KeywordAlias} | {KeywordTdef} | {KeywordFdef}
 
+KeywordMain				= "main"
 KeywordIf				= "if"
 KeywordIfTerminator		= "fi"
 KeywordThen				= "then"
@@ -158,7 +165,7 @@ KeywordRead				= "read"
 KeywordPrint 			= "print"
 KeywordBreak			= "break"
 KeywordStatement		= {KeywordIf} | {KeywordIfTerminator} | {KeywordThen} | {KeywordElse} | {KeywordLoop} | {KeywordLoopTerminator} | {KeywordReturn} | {KeywordPrint} | {KeywordBreak}
-Keyword					= {LineTerminator} | {WhiteSpace} | {Semicolon} | {LiterNull} | {KeywordDataType} | {KeywordDeclaration} | {KeywordStatement}
+Keyword					= {LineTerminator} | {WhiteSpace} | {Semicolon} | {LiterNull} | {KeywordDataType} | {KeywordDeclaration} | {KeywordStatement} | {KeywordMain}
 
 //Paragraph 3 -----------------------------------------------
 // ----------------------------------------------------------
@@ -378,8 +385,10 @@ StatementPredicatedFunctionCall		= .
 // ----------------------------------------------------------
 // Initial State
 // ----------------------------------------------------------
-<YYINITIAL> {tdef} { yypushState(STATE_TDEF); return new Yytoken(TokenType.TDEF); }
-
+<YYINITIAL> {KeywordTdef} { yypushState(STATE_TDEF); return new Yytoken(TokenType.TDEF); }
+<YYINITIAL> {KeywordFdef} { yypushState(STATE_FDEF); return new Yytoken(TokenType.FDEF); }
+<YYINITIAL> {KeywordAlias} { yypushState(STATE_ALIAS); return new Yytoken(TokenType.ALIAS); }
+<YYINITIAL> {KeywordMain} { yypushState(STATE_MAIN); return new Yytoken(TokenType.MAIN); }
 
 
 <YYINITIAL,STATE_COMMENT_MULTI,STATE_COMMENT_SINGLE> <<EOF>> {return new Yytoken(TokenType.EOF);}
