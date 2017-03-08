@@ -8,8 +8,66 @@ import java.util.*
 
 class TokenType {
 
-	private final static int EOF 		= 0;
-	private final static int IF 		= 1;
+	private final static int EOF 		=  0;
+	private final static int IF 		=  1;
+	private final static int SEMICOLON  =  2;
+	private final static int NULL 		=  3;
+	private final static int DICT 		=  4;
+	private final static int SEQ 		=  5;
+	private final static int ALIAS 		=  6;
+	private final static int TDEF 		=  7;
+	private final static int FDEF 		=  8;
+	private final static int FI 		=  9;
+	private final static int THEN 		= 10;
+	private final static int ELSE 		= 11;
+	private final static int LOOP 		= 12;
+	private final static int POOL 		= 13;
+	private final static int RETURN 	= 14;
+	private final static int READ 		= 15;
+	private final static int PRINT 		= 16;
+	private final static int BREAK 		= 17;
+	private final static int ID 		= 18;
+	private final static int BOOLEAN 	= 19;
+	private final static int INT 		= 20;
+	private final static int RAT    	= 21;
+	private final static int FLOAT   	= 22;
+	private final static int TOP 		= 23;
+	private final static int FIELD_REF 	= 24;
+	private final static int NOT    	= 25;
+	private final static int AND    	= 26;
+	private final static int OR     	= 27;
+	private final static int IMPLIES 	= 28;
+	private final static int PLUS 	    = 29;
+	private final static int MINUS 	    = 30;
+	private final static int MULTIPLY 	= 31;
+	private final static int DIVIDE 	= 32;
+	private final static int POWER  	= 33;
+	private final static int IN 	    = 34;
+	private final static int CONCAT 	= 35;
+	private final static int LESS_THAN 	= 36;
+	private final static int MORE_THAN 	= 37;
+	private final static int LESS_OR_EQ = 38;
+	private final static int MORE_OR_EQ = 39;
+	private final static int EQUAL 	    = 40;
+	private final static int NOT_EQUAL 	= 41;
+	private final static int ASSIGNMENT = 42;
+	private final static int COLON 	    = 43;
+	private final static int DOT 	    = 44;
+	private final static int BRACKET_L 	= 45;
+	private final static int BRACKET_R 	= 46;
+	private final static int BRACKET_SL = 47;
+	private final static int BRACKET_RL = 48;
+	private final static int COMMA   	= 49;
+	private final static int STRING 	= 50;
+	private final static int CHAR   	= 51;
+	private final static int QUES_MARK 	= 52;
+	private final static int MAIN 	    = 53;
+	private final static int CURLY_R 	= 54;
+	private final static int CURLY_L 	= 55;
+	private final static int ANGLE_L 	= 56;
+	private final static int ANGLE_R 	= 57;
+
+
 }
 
 class Yytoken {
@@ -55,6 +113,7 @@ class Yytoken {
 LineTerminator	= "\r"|"\n"|"\r\n"
 WhiteSpace    	= {LineTerminator} | [ \t\f]
 Semicolon		= ";"
+Colon 			= ":"
 
 // Literals
 LiteralNull		= "null"
@@ -70,6 +129,7 @@ KeywordTdef				= "tdef"
 KeywordFdef				= "fdef"
 KeywordDeclaration 		= {KeywordAlias} | {KeywordTdef} | {KeywordFdef}
 
+KeywordMain				= "main"
 KeywordIf				= "if"
 KeywordIfTerminator		= "fi"
 KeywordThen				= "then"
@@ -81,7 +141,7 @@ KeywordRead				= "read"
 KeywordPrint 			= "print"
 KeywordBreak			= "break"
 KeywordStatement		= {KeywordIf} | {KeywordIfTerminator} | {KeywordThen} | {KeywordElse} | {KeywordLoop} | {KeywordLoopTerminator} | {KeywordReturn} | {KeywordPrint} | {KeywordBreak}
-Keyword					= {LineTerminator} | {WhiteSpace} | {Semicolon} | {LiterNull} | {KeywordDataType} | {KeywordDeclaration} | {KeywordStatement}
+Keyword					= {LineTerminator} | {WhiteSpace} | {Semicolon} | {LiterNull} | {KeywordDataType} | {KeywordDeclaration} | {KeywordStatement} | {KeywordMain}
 
 //Paragraph 3 -----------------------------------------------
 // ----------------------------------------------------------
@@ -274,26 +334,29 @@ StatementPredicatedFunctionCall		= .
 // ----------------------------------------------------------
 // Comments
 // ----------------------------------------------------------
-{CommentSingleLineBegin} { yypushState(STATE_COMMENT_SINGLE); }
-{CommentMultilineBegin } { yypushState(STATE_COMMENT_MULTI ); }
+{CommentSingleLineBegin} { yybegin(STATE_COMMENT_SINGLE); }
+{CommentMultilineBegin } { yybegin(STATE_COMMENT_MULTI ); }
 
-<STATE_COMMENT_SINGLE> { CommentSingleLineEnd} {yypopState(); };
+<STATE_COMMENT_SINGLE> { CommentSingleLineEnd} { yybegin(YYINITIAL); };
 <STATE_COMMENT_SINGLE> . {};
 
-<STATE_COMMENT_MULTI>  { CommentMultiLineEnd} {yypopState(); };
+<STATE_COMMENT_MULTI>  { CommentMultiLineEnd} { yybegin(YYINITIAL); };
 <STATE_COMMENT_MULTI>  . {};
 
 
 // ----------------------------------------------------------
 // Initial State
 // ----------------------------------------------------------
-<YYINITIAL> {tdef} { yypushState(STATE_TDEF); return new Yytoken(TokenType.TDEF); }
+<YYINITIAL> {KeywordTdef } { return new Yytoken(TokenType.TDEF ); }
+<YYINITIAL> {KeywordFdef } { return new Yytoken(TokenType.FDEF ); }
+<YYINITIAL> {KeywordAlias} { return new Yytoken(TokenType.ALIAS); }
+<YYINITIAL> {KeywordMain } { return new Yytoken(TokenType.MAIN ); }
 
 
 // ----------------------------------------------------------
 // Tokeniser
 // ----------------------------------------------------------
-{LiteralInt} { return new Yytoken(TokenType.INT,yytext());}
+{LiteralInt} { return new Yytoken(TokenType.INT,yytext()); }
 
 // ----------------------------------------------------------
 // End of file
