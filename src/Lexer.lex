@@ -51,7 +51,7 @@ class Yytoken {
 %xstate STATE_COMMENT_SINGLE, STATE_COMMENT_MULTI
 
 // ----------------------------------------------------------
-// Class code
+// State Stack
 // ----------------------------------------------------------
 %{
 	private Stack<Integer> state_stack = new Stack<Integer>();
@@ -293,26 +293,43 @@ StatementPredicatedFunctionCall		= .
 // ----------------------------------------------------------
 // Lexical Rules
 // ----------------------------------------------------------
+{WhiteSpace} {}
 
 // ----------------------------------------------------------
 // Comments
 // ----------------------------------------------------------
-{CommentSingleLineBegin} {yypushState(STATE_COMMENT_SINGLE);}
-{CommentMultilineBegin } {yypushState(STATE_COMMENT_MULTI) ;}
+{CommentSingleLineBegin} { yypushState(STATE_COMMENT_SINGLE); }
+{CommentMultilineBegin } { yypushState(STATE_COMMENT_MULTI ); }
 
-<STATE_COMMENT_SINGLE> {CommentSingleLineEnd} {yypopState();};
+<STATE_COMMENT_SINGLE> { CommentSingleLineEnd} {yypopState(); };
 <STATE_COMMENT_SINGLE> . {};
 
-<STATE_COMMENT_MULTI> {CommentMultiLineEnd} {yypopState();};
-<STATE_COMMENT_MULTI> . {};
+<STATE_COMMENT_MULTI>  { CommentMultiLineEnd} {yypopState(); };
+<STATE_COMMENT_MULTI>  . {};
 
 
-<YYINITIAL> 
+// ----------------------------------------------------------
+// State begins
+// ----------------------------------------------------------
+{KeywordIf} 	{ yypushState(STATE_IF); }
+{KeywordLoop} 	{ yypushState(STATE_LOOP); }
 
-{WhiteSpace} {}
+{Keyword} { yypushState(STATE_IF); }
 
-<<EOF>> {return new Yytoken(TokenType.EOF);}
+// ----------------------------------------------------------
+// State ends
+// ----------------------------------------------------------
 
+{LiteralInt} { return new Yytoken(TokenType.INT,yytext());}
+
+// ----------------------------------------------------------
+// Initial State
+// ----------------------------------------------------------
+<YYINITIAL> {tdef} { yypushState(STATE_TDEF); return new Yytoken(TokenType.TDEF); }
+
+
+
+<YYINITIAL,STATE_COMMENT_MULTI,STATE_COMMENT_SINGLE> <<EOF>> {return new Yytoken(TokenType.EOF);}
 . {
 	report_error(
          "Syntax error at line " + (yyline+1) + ", column "
