@@ -84,138 +84,149 @@ LiteralNull		= "null"
 
 // Key words
 
-KeywordAlias			= .
-KeywordDict				= .
-KeywordSeq				= .
-KeywordTdef				= .
-KeywordFdef				= .
-KeywordIf				= .
-KeywordIfTerminator		= .
-KeywordThen				= .
-KeywordElse				= .
-KeywordLoop				= .
-KeywordLoopTerminator	= .
-KeywordReturn			= .
-KeywordRead				= .
-KeywordPrint 			= .
-KeywordBreak			= .
-Keyword					= .
+KeywordDict				= "dict"
+KeywordSeq				= "seq"
+KeywordDataType         = {KeywordDict} | {KeywordSeq}
+
+KeywordAlias			= "alias"
+KeywordTdef				= "tdef"
+KeywordFdef				= "fdef"
+KeywordDeclaration 		= {KeywordAlias} | {KeywordTdef} | {KeywordFdef}
+
+KeywordIf				= "if"
+KeywordIfTerminator		= "fi"
+KeywordThen				= "then"
+KeywordElse				= "else"
+KeywordLoop				= "loop"
+KeywordLoopTerminator	= "pool"
+KeywordReturn			= "return"
+KeywordRead				= "read"
+KeywordPrint 			= "print"
+KeywordBreak			= "break"
+KeywordStatement		= {KeywordIf} | {KeywordIfTerminator} | {KeywordThen} | {KeywordElse} | {KeywordLoop} | {KeywordLoopTerminator} | {KeywordReturn} | {KeywordPrint} | {KeywordBreak}
+Keyword					= {LineTerminator} | {WhiteSpace} | {Semicolon} | {LiterNull} | {KeywordDataType} | {KeywordDeclaration} | {KeywordStatement}
 
 //Paragraph 3 -----------------------------------------------
 // ----------------------------------------------------------
-CommentSingleLine = .
-CommentMultiline  = .
-Comment 			= CommentMultiline | CommentSingleLine
+CommentSingleLine = "#".*"\n"
+CommentMultiline  = "/#" ~"#/"
+Comment 		= {CommentMultiline} | {CommentSingleLine}
 
 //Paragraph 4 -----------------------------------------------
 // ----------------------------------------------------------
-Identifier = .
+Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*) (!{Keyword})
 
 //Paragraph 5 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeChar		= .
-LiteralChar   		= .
+DataTypeChar		= "char"
+LiteralChar   		= "'([^'\\\n]|\\.)'"
+LegalCharacters		= "([^'\\\n]|\\.)"			
 
 //Paragraph 6 -----------------------------------------------
 // ----------------------------------------------------------
-ValueBool = .
+ValueBool = "T" | "F"
 
 //Paragraph 7 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeBool  = .
-DataTypeInt   = .
-DataTypeRat   = .
-DataTypeFloat = .
+DataTypeBool  = "bool"
+DataTypeInt   = "int"
+DataTypeRat   = "rat"
+DataTypeFloat = "float"
 
-LiteralInt      = .
-LiteralRational = .
-LiteralFloat    = .
-LiteralNumber   = .
+LiteralPosInt   = "0 | [1-9][0-9]*"
+LiteralInt      = "0 | -?[1-9][0-9]*"
+LiteralRational = [{LiteralInt} / {LiteralPosInt}] | [{LiteralInt} _ {LiteralPosInt} / {LiteralPosInt}]
+LiteralFloat    = [{LiteralInt} . {LiteralPosInt}]
+LiteralNumber   = {LiteralInt} | {LiteralRational} | {LiteralFloat}
 
 //Paragraph 8 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeDictionary 		= .
-LiteralDictionary  		= .
+DataTypeDictionary 		= dict<{DataTypePrimitive}, {DataTypePrimitive}>
+LiteralDictionary  		= "{"(({DictionaryType} : {DictionaryType})*)"}"
 
-DataTypeTop       		= .
-LiteralTop				= .
+DataTypeTop       		= "top"
+LiteralTop				= ({LiteralNumber})   
 
-LiteralEmptyDictionary 	= .
+LiteralEmptyDictionary 	= "{" (^{DictionaryType}) "}"
 
 
 //Paragraph 9 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeSequence 	= .
-LiteralSequence    	= .
-LiteralEmptyList	= .
+DataTypeSequence 	= {KeywordSeq} < {DataType} >
+LiteralSequence = "[" ({ArbitraryText}) ("," {ArbitraryText})* "]"        
+LiteralEmptyList	= "[]"
 
 //Paragraph 10 ----------------------------------------------
 // ----------------------------------------------------------
-LiteralString			= .
-SequenceLengthParameter	= .
-
+LiteralString			= "\"" {LegalCharacters}* "\""
+SequenceLengthParameter	= ".length"
+ArbitraryText			= {LegalCharacters}+      
 
 // Table 1 --------------------------------------------------
 // ----------------------------------------------------------
-DataTypePrimitive = .
-DataTypeAggregate = .
-DataType          = .
+DataTypePrimitive = {DataTypeBool} | {DataTypeInt} | {DataTypeRat} | {DataTypeFloat} | {DataTypeChar}
+DataTypeAggregate = {DataTypeDictionary} | {DataTypeSequence}
+DataType          = {DataTypePrimitive} | {DataTypeAggregate}
 
+LiteralPrimitive  = {ValueBool} | {LiteralNumber} | {LiteralChar}
+LiteralAggregate  = {LiteralDictionary} | {LiteralEmptyDictionary} | {LiteralEmptyList} | {LiteralSequence} | {LiteralString}
+Literal           = {LiteralPrimitive} | {LiteralAggregate}             
 
 // Table 2 --------------------------------------------------
 // ----------------------------------------------------------
 
 // boolean operators
-OperatorNot		= .
-OperatorAnd		= .
-OperatorOr		= .
-OperatorImplies	= .
-BooleanOperator  = .
+
+OperatorNot		= "!"
+OperatorAnd		= "&&" //"&" "&" ??
+OperatorOr		= "||"
+OperatorImplies	= "=>"
+BooleanOperator  = ({OperatorNot} | {OperatorAnd} | {OperatorOr} | {OperatorImplies})
 
 // numeric operators
-OperatorPlus			= .
-OperatorMinus			= .
-OperatorMultiplication	= .
-OperatorDivision		= .
-OperatorPower			= .
-NumericaOperator		= .
+OperatorPlus			= "+"
+OperatorMinus			= "-"
+OperatorMultiplication	= "*"
+OperatorDivision		= "/"
+OperatorPower			= "^"
+NumericaOperator		= ({OperatorPlus} | {OperatorMinus} | {OperatorDivision} | {OperatorPower})
 
 // dicionary/sequence operators
-OperatorIn 	= .
+OperatorIn 	= "in"
 
 // dictionary operators
-OperatorDictionaryKey 	= .
-DictionaryOperator		= .
+OperatorDictionaryKey 	= //d[k]
+DictionaryOperator		= ({OperatorIn} | {OperatorDictionaryKey})
 
 // sequence operators
-OperatorSequenceConcatenation	= .
-OperatorSequenceIndex			= .
-OperatorSequenceLeftSlice		= .
-OperatorSequenceRightSlice		= .
-OperatorSequenceDualSlice		= .
-OperatorSequenceBoundlessSlice	= .
-SequenceOperator					= .
+OperatorSequenceConcatenation	= "::"
+OperatorSequenceIndex			= {ArbitraryText} "[" [0-9]* "]"
+OperatorSequenceLeftSlice		= {ArbitraryText} "[" [0-9]* ":" "]"
+OperatorSequenceRightSlice		= {ArbitraryText} "[" ":" [0-9]* "]"
+OperatorSequenceDualSlice		= {ArbitraryText} "[" [0-9]* ":" [0-9]* "]"
+OperatorSequenceBoundlessSlice	= {ArbitraryText} "[" ":" "]"
+SequenceOperator				= ({OperatorIn} | {OperatorSequenceConcatenation} | {OperatorSequenceIndex} | {OperatorSequenceLeftSlice} | {OperatorSequenceRightSlice} | {OperatorSequenceDualSlice} | {OperatorSequenceBoundlessSlice})
 
 // comparison operators
-OperatorLessThan				= .
-OperatorLessThanOrEqual		= .
-OperatorEquality				= .
-OperatorNotEqual				= .
-ComparisonOperator			= .
+OperatorLessThan				= "<"
+OperatorLessThanOrEqual		= "<="
+OperatorEquality				= "="
+OperatorNotEqual				= {OperatorNot} {OperatorEquality}  //"!="
+ComparisonOperator			= ({OperatorLessThan} | {OperatorLessThanOrEqual} | {OperatorEquality} | {OperatorNotEqual})
 
 OperatorInfix		= .
 OperatorPostfix		= .
 
 //Paragraph 13 ----------------------------------------------
 // ----------------------------------------------------------
-DeclarationVariable		= .
-DeclarationType			= .
-DeclarationTypeAlias	= .
+DeclarationVariable		= {Identifier} : {DataType} := {Literal} ";"           
+DeclarationType			= {KeywordTdef} {ArbitraryText} "{" ({ArbitraryText} : {DataType}) (, {ArbitraryText} : {DataType})* "}" ";"
+DeclarationTypeAlias	= {KeywordAlias} {DataType} {DataType} ";" 
 
 //Paragraph 14 ----------------------------------------------
 // ----------------------------------------------------------
 DeclarationFunctionParameter		= .
-DeclarationFunctionParameteList		= .
+DeclarationFunctionParameterList	= .
 DeclarationLocalVariable			= .
 DeclarationLocalVariableList		= .
 DeclarationFunctionBody				= .
@@ -260,7 +271,7 @@ StatementReturn			= .
 Statement 				= .
 StatementBody			= .
 
-//Paragraph 17 ----------------------------------------------
+// Paragraph 17 ----------------------------------------------
 // ----------------------------------------------------------
 StatementInbuiltTypeDeclarationAndInitialisation		= .
 StatementUserDefinedTypeDeclarationAndInitialisation	= .
@@ -284,7 +295,6 @@ StatementPredicatedFunctionCall		= .
          "Syntax error at line " + (yyline+1) + ", column "
 		+ yycolumn, null );
   }
-
 
 
 
