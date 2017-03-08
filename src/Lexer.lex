@@ -8,7 +8,7 @@ import java.util.*
 
 class TokenType {
 
-	private final static int NONE 		= 0;
+	private final static int EOF 		= 0;
 	private final static int IF 		= 1;
 }
 
@@ -47,7 +47,8 @@ class Yytoken {
 // States
 // ----------------------------------------------------------
 
-%state STATE_IF, STATE_FDEF, STATE_TDEF, STATE_COMMENT, STATE_LOOP
+%state  STATE_IF, STATE_FDEF, STATE_TDEF, STATE_LOOP
+%xstate STATE_COMMENT_SINGLE, STATE_COMMENT_MULTI
 
 // ----------------------------------------------------------
 // Class code
@@ -110,7 +111,12 @@ Keyword					= {LineTerminator} | {WhiteSpace} | {Semicolon} | {LiterNull} | {Key
 // ----------------------------------------------------------
 CommentSingleLine = "#".*"\n"
 CommentMultiline  = "/#" ~"#/"
-Comment 		= {CommentMultiline} | {CommentSingleLine}
+Comment 			= {CommentMultiline} | {CommentSingleLine}
+
+CommentSingleLineBegin 	= "#"
+CommentSingleLineEnd	= "\n"
+CommentMultilineBegin  	= "/#" 
+CommentMultiLineEnd		= "#/"
 
 //Paragraph 4 -----------------------------------------------
 // ----------------------------------------------------------
@@ -286,9 +292,24 @@ StatementPredicatedFunctionCall		= .
 // Lexical Rules
 // ----------------------------------------------------------
 
-<YYINITIAL>
+// ----------------------------------------------------------
+// Comments
+// ----------------------------------------------------------
+{CommentSingleLineBegin} {yypushState(STATE_COMMENT_SINGLE);}
+{CommentMultilineBegin } {yypushState(STATE_COMMENT_MULTI) ;}
+
+<STATE_COMMENT_SINGLE> {CommentSingleLineEnd} {yypopState();};
+<STATE_COMMENT_SINGLE> . {};
+
+<STATE_COMMENT_MULTI> {CommentMultiLineEnd} {yypopState();};
+<STATE_COMMENT_MULTI> . {};
+
+
+<YYINITIAL> 
 
 {WhiteSpace} {}
+
+<<EOF>> {return new Yytoken(TokenType.EOF);}
 
 . {
 	report_error(
