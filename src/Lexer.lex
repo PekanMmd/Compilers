@@ -367,32 +367,32 @@ StatementPredicatedFunctionCall		= .
 <YYINITIAL> {KeywordMain } { return new Yytoken(TokenType.MAIN ); }
 
 // Tokens
-{LiteralInt} { return new Yytoken(TokenType.LIT_INT,yytext()); }
-{KeywordIf} { return new Yytoken(TokenType.IF); }
-{Semicolon} { return new Yytoken(TokenType.SEMICOLON); }
-{LiteralNull} { return new Yytoken(TokenType.NULL); }
-{DictionaryType} { return new Yytoken(TokenType.DICT, yytext()); }
-{LiteralSequence} { return new Yytoken(TokenType.SEQ, yytext()); }
-{KeywordAlias} { return new Yytoken(TokenType.ALIAS); }
-{KeywordTdef} { return new Yytoken(TokenType.TDEF); }
-{KeywordFdef} { return new Yytoken(TokenType.FDEF); }
-{KeywordIfTerminator} { return new Yytoken(TokenType.FI); }
-{KeywordThen} { return new Yytoken(TokenType.THEN); }
-{KeywordElse} { return new Yytoken(TokenType.ELSE); }
-{KeywordLoop} { return new Yytoken(TokenType.LOOP); }
-{KeywordLoopTerminator} { return new Yytoken(TokenType.POOL); }
-{KeywordReturn} { return new Yytoken(TokenType.RETURN); }
-{KeywordRead} { return new Yytoken(TokenType.READ); }
-{KeywordPrint} { return new Yytoken(TokenType.PRINT); }
-{KeywordBreak} { return new Yytoken(TokenType.BREAK); }
-{Identifier} { return new Yytoken(TokenType.ID,yytext()); }
-{DataTypeInt} { return new Yytoken(TokenType.TYPE_INT); }
-{DataTypeBool} { return new Yytoken(TokenType.TYPE_BOOL); }
-{DataTypeRat} { return new Yytoken(TokenType.TYPE_RAT); }
-{DataTypeFloat} { return new Yytoken(TokenType.TYPE_FLOAT); }
-{DataTypeTop} { return new Yytoken(TokenType.TOP); }
-{ExpressionFieldReference} { return new Yytoken(TokenType.FIELD_REF,yytext()); }
-{OperatorNot} { return new Yytoken(TokenType.NOT); }
+{LiteralInt} 				{ return new Yytoken(TokenType.LIT_INT,yytext()); }
+{KeywordIf} 				{ return new Yytoken(TokenType.IF); }
+{Semicolon} 				{ return new Yytoken(TokenType.SEMICOLON); }
+{LiteralNull} 				{ return new Yytoken(TokenType.NULL); }
+{DictionaryType}			{ return new Yytoken(TokenType.DICT, yytext()); }
+{LiteralSequence} 			{ return new Yytoken(TokenType.SEQ, yytext()); }
+{KeywordAlias} 				{ return new Yytoken(TokenType.ALIAS); }
+{KeywordTdef} 				{ return new Yytoken(TokenType.TDEF); }
+{KeywordFdef} 				{ return new Yytoken(TokenType.FDEF); }
+{KeywordIfTerminator} 		{ return new Yytoken(TokenType.FI); }
+{KeywordThen} 				{ return new Yytoken(TokenType.THEN); }
+{KeywordElse} 				{ return new Yytoken(TokenType.ELSE); }
+{KeywordLoop} 				{ return new Yytoken(TokenType.LOOP); }
+{KeywordLoopTerminator} 	{ return new Yytoken(TokenType.POOL); }
+{KeywordReturn} 			{ return new Yytoken(TokenType.RETURN); }
+{KeywordRead} 				{ return new Yytoken(TokenType.READ); }
+{KeywordPrint} 				{ return new Yytoken(TokenType.PRINT); }
+{KeywordBreak} 				{ return new Yytoken(TokenType.BREAK); }
+{Identifier} 				{ return new Yytoken(TokenType.ID,yytext()); }
+{DataTypeInt} 				{ return new Yytoken(TokenType.TYPE_INT); }
+{DataTypeBool}				{ return new Yytoken(TokenType.TYPE_BOOL); }
+{DataTypeRat} 				{ return new Yytoken(TokenType.TYPE_RAT); }
+{DataTypeFloat} 			{ return new Yytoken(TokenType.TYPE_FLOAT); }
+{DataTypeTop} 				{ return new Yytoken(TokenType.TOP); }
+{ExpressionFieldReference}  { return new Yytoken(TokenType.FIELD_REF,yytext()); }
+{OperatorNot} 				{ return new Yytoken(TokenType.NOT); }
 {OperatorAnd} { return new Yytoken(TokenType.AND); }
 {OperatorOr} { return new Yytoken(TokenType.OR); }
 {OperatorImplies} { return new Yytoken(TokenType.IMPLIES); }

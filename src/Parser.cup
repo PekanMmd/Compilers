@@ -94,8 +94,25 @@ terminal  EOF, ERROR, FIELD_REF;
  * Non Terminals
  * -----------------------------------------------------------------------------------------
  */
-non terminal            expr_list;
-non terminal Integer    expr;      // used to store evaluated subexpressions
+
+// ˜Z Program
+non terminal        Program;
+
+// Definitions and Declarations
+non terminal        Definition_function, Definition_main, Declaration_variable, Declaration_type, Declaration_type_alias;
+non terminal        Parameter_function, Parameter_list_function, Parameter_type, Parameter_list_type;
+
+// Function Definitions
+non terminal        Func_body, Main_body;
+
+// Statements
+non terminal        Statement, Statement_if, Statement_if_else, Statement_loop;
+
+// Expressions
+non terminal        Expression, Expression_list, Literal;
+non terminal        Expression_boolean, Expression_comparison, Expression_numeric, Expression_sequence, Expression_function_call;
+
+
 
 /* -----------------------------------------------------------------------------------------
  * Precedences
