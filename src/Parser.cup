@@ -24,7 +24,7 @@ scan with {: return lexer.next_token(); :};
  */
 
 // ----OTHER----
-terminal  EOF, ERROR, FIELD_REF, ID;
+terminal  EOF, ERROR, ID, LEN;
 
 
 // ----PUNCTUATION----

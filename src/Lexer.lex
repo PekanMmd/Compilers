@@ -44,8 +44,8 @@ LineTerminator	= "\r"|"\n"|"\r\n"
 WhiteSpace    	= {LineTerminator} | [ \t\f]
 
 // Punctuation
-Semicolon			= ";"
-Colon 				= ":"
+Semicolon		   = ";"
+Colon 			   = ":"
 Semicolon		   = ";"
 Dot 			   = "."
 LeftBracket		   = "("
@@ -60,18 +60,16 @@ Comma              = ","
 QuestionMark       = "?"
 
 // Literals
-LiteralNull		= "null"
+LiteralNull		   = "null"
 
 // Key words
 
 KeywordDict				= "dict"
 KeywordSeq				= "seq"
-KeywordDataType         = {KeywordDict} | {KeywordSeq}
 
 KeywordAlias			= "alias"
 KeywordTdef				= "tdef"
 KeywordFdef				= "fdef"
-KeywordDeclaration 		= {KeywordAlias} | {KeywordTdef} | {KeywordFdef}
 
 KeywordMain				= "main"
 KeywordIf				= "if"
@@ -84,15 +82,9 @@ KeywordReturn			= "return"
 KeywordRead				= "read"
 KeywordPrint 			= "print"
 KeywordBreak			= "break"
-KeywordStatement		= {KeywordIf} | {KeywordIfTerminator} | {KeywordThen} | {KeywordElse} | {KeywordLoop} | {KeywordLoopTerminator} | {KeywordReturn} | {KeywordPrint} | {KeywordBreak}
-Keyword					= {LineTerminator} | {WhiteSpace} | {Semicolon} | {LiterNull} | {KeywordDataType} | {KeywordDeclaration} | {KeywordStatement} | {KeywordMain}
 
 //Paragraph 3 -----------------------------------------------
 // ----------------------------------------------------------
-CommentSingleLine = "#".*"\n"
-CommentMultiline  = "/#" ~"#/"
-Comment 			= {CommentMultiline} | {CommentSingleLine}
-
 CommentSingleLineBegin 	= "#"
 CommentSingleLineEnd	= "\n"
 CommentMultilineBegin  	= "/#" 
@@ -105,8 +97,8 @@ Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*) (!{Keyword})
 //Paragraph 5 -----------------------------------------------
 // ----------------------------------------------------------
 DataTypeChar		= "char"
-LiteralChar   		= "'([^'\\\n]|\\.)'"
-LegalCharacters		= "([^'\\\n]|\\.)"			
+LiteralChar   		= '([^'\\\n]|\\.)'
+LegalCharacters		= ([^'\\\n]|\\.)
 
 //Paragraph 6 -----------------------------------------------
 // ----------------------------------------------------------
@@ -118,47 +110,30 @@ DataTypeBool  = "bool"
 DataTypeInt   = "int"
 DataTypeRat   = "rat"
 DataTypeFloat = "float"
+DataTypePrimitive = DataTypeFloat | DataTypeRat | DataTypeInt | DataTypeBool | DataTypeChar
 
-LiteralPosInt   = "0 | [1-9][0-9]*"
-LiteralInt      = "0 | -?[1-9][0-9]*"
+LiteralPosInt   =  0 | [1-9][0-9]*
+LiteralInt      =  0 | -?[1-9][0-9]*
 LiteralRational = ({LiteralInt} "/" {LiteralPosInt}) | ({LiteralInt} _ {LiteralPosInt} "/" {LiteralPosInt})
 LiteralFloat    = {LiteralInt} . {LiteralPosInt}
-LiteralNumber   = {LiteralInt} | {LiteralRational} | {LiteralFloat}
 
 //Paragraph 8 -----------------------------------------------
 // ----------------------------------------------------------
 DataTypeDictionary 		= dict<{DataTypePrimitive}, {DataTypePrimitive}>
-LiteralDictionary  		= "{"(({DictionaryType} : {DictionaryType})*)"}"
 
 DataTypeTop       		= "top"
-LiteralTop				= ({LiteralNumber})   
-
-LiteralEmptyDictionary 	= "{}"
 
 
 //Paragraph 9 -----------------------------------------------
 // ----------------------------------------------------------
 DataTypeSequence 	= {KeywordSeq} < {DataType} >
-LiteralSequence = "[" ({ArbitraryText}) ("," {ArbitraryText})* "]"        
-LiteralEmptyList	= "[]"
 
 //Paragraph 10 ----------------------------------------------
 // ----------------------------------------------------------
 DataTypeString			= "string"
 LiteralString			= "\"" {LegalCharacters}* "\""
-SequenceLengthParameter	= ".len"
-ArbitraryText			= {LegalCharacters}+      
-
-// Table 1 --------------------------------------------------
-// ----------------------------------------------------------
-DataTypePrimitive 		= {DataTypeBool} | {DataTypeInt} | {DataTypeRat} | {DataTypeFloat} | {DataTypeChar}
-DataTypeAggregate 		= {DataTypeDictionary} | {DataTypeSequence}
-DataType          		= {DataTypePrimitive} | {DataTypeAggregate}
-
-LiteralPrimitive  		= {ValueBool} | {LiteralNumber} | {LiteralChar}
-LiteralAggregate  		= {LiteralDictionary} | {LiteralEmptyDictionary} | {LiteralEmptyList} | {LiteralSequence} | {LiteralString}
-LiteralDictionaryKey 	= {LiteralPrimitive}
-Literal           		= {LiteralPrimitive} | {LiteralAggregate}             
+SequenceLengthParameter	= "len"
+        
 
 // Table 2 --------------------------------------------------
 // ----------------------------------------------------------
@@ -169,7 +144,6 @@ OperatorNot		= "!"
 OperatorAnd		= "&&" //"&" "&" ??
 OperatorOr		= "||"
 OperatorImplies	= "=>"
-BooleanOperator  = ({OperatorNot} | {OperatorAnd} | {OperatorOr} | {OperatorImplies})
 
 // numeric operators
 OperatorPlus			= "+"
@@ -177,98 +151,26 @@ OperatorMinus			= "-"
 OperatorMultiplication	= "*"
 OperatorDivision		= "/"
 OperatorPower			= "^"
-NumericaOperator		= ({OperatorPlus} | {OperatorMinus} | {OperatorDivision} | {OperatorPower})
 
 // dicionary/sequence operators
 OperatorIn 	= "in"
 
-// dictionary operators
-OperatorDictionaryKey 	= "[" {LiteralDictionaryKey} "]"
-DictionaryOperator		= ({OperatorIn} | {OperatorDictionaryKey})
-
 // sequence operators
 OperatorSequenceConcatenation	= "::"
-OperatorSequenceIndex			= {ArbitraryText} "[" [0-9]* "]"
-OperatorSequenceLeftSlice		= {ArbitraryText} "[" [0-9]* ":" "]"
-OperatorSequenceRightSlice		= {ArbitraryText} "[" ":" [0-9]* "]"
-OperatorSequenceDualSlice		= {ArbitraryText} "[" [0-9]* ":" [0-9]* "]"
-OperatorSequenceBoundlessSlice	= {ArbitraryText} "[" ":" "]"
-SequenceOperator				= ({OperatorIn} | {OperatorSequenceConcatenation} | {OperatorSequenceIndex} | {OperatorSequenceLeftSlice} | {OperatorSequenceRightSlice} | {OperatorSequenceDualSlice} | {OperatorSequenceBoundlessSlice})
 
 // comparison operators
 OperatorLessThan				= "<"
 OperatorLessThanOrEqual		    = "<="
 OperatorEquality				= "="
 OperatorNotEqual				= "!="
-ComparisonOperator			= ({OperatorLessThan} | {OperatorLessThanOrEqual} | {OperatorEquality} | {OperatorNotEqual})
-
-
-OperatorPrefix      = OperatorNot
-OperatorInfix		= ComparisonOperator | OperatorAnd | OperatorOr | OperatorImplies | NumericaOperator | OperatorIn | OperatorSequenceConcatenation
-OperatorPostfix		= OperatorSequenceConcatenation | OperatorSequenceIndex | OperatorSequenceLeftSlice | OperatorSequenceRightSlice | OperatorSequenceDualSlice | OperatorSequenceBoundlessSlice | OperatorDictionaryKey
-
-//Paragraph 13 ----------------------------------------------
-// ----------------------------------------------------------
-DeclarationVariable		= {Identifier} : {DataType} := {Literal} ";"           
-DeclarationType			= {KeywordTdef} {ArbitraryText} "{" ({ArbitraryText} : {DataType}) (, {ArbitraryText} : {DataType})* "}" ";"
-DeclarationTypeAlias	= {KeywordAlias} {DataType} {DataType} ";" 
-
-//Paragraph 14 ----------------------------------------------
-// ----------------------------------------------------------
-DeclarationFunctionParameter		= .
-DeclarationFunctionParameterList	= .
-DeclarationLocalVariable			= .
-DeclarationLocalVariableList		= .
-DeclarationFunctionBody				= .
-
-FunctionStatement					= .
-FunctionStatementList				= .
-FunctionReturnType					= .
-
-//Listing 2 -------------------------------------------------
-// ----------------------------------------------------------
-DeclarationFunction 				= .
-
-//Paragraph 15 ----------------------------------------------
-// ----------------------------------------------------------
-FunctionPredicate					= "?" Expression "?"
-
-ExpressionFieldReference			= Identifier "." Identifier
-ExpressionPrefixOperation			= OperatorInfix ArbitraryText
-ExpressionInfixOperation			= ArbitraryText OperatorInfix ArbitraryText
-ExpressionPostfixOperation			= Identifier OperatorPostfix 
-ExpressionPredicatedFunctionCall	= FunctionPredicate Identifier "(" DeclarationFunctionParameteList ")"
-
-Expression 							= ExpressionFieldReference | ExpressionPrefixOperation | ExpressionInfixOperation | ExpressionPostfixOperation | ExpressionPredicatedFunctionCall
 
 //Paragraph 16 ----------------------------------------------
 // ----------------------------------------------------------
 // Table 4 --------------------------------------------------
 // ----------------------------------------------------------
 OperatorAssignment		= ":="
-ExpressionList			= Expression (, Expression)*
 
-StatementAssignment		= .
-StatementInput			= .
-StatementOutput			= .
-StatementFunctionCall	= .
-StatementIfThen			= .
-StatementIfThenElse		= .
-StatementLoop			= .
-StatementBreak			= .
-StatementReturn			= .
 
-Statement 				= .
-StatementBody			= .
-
-// Paragraph 17 ----------------------------------------------
-// ----------------------------------------------------------
-StatementInbuiltTypeDeclarationAndInitialisation		= .
-StatementUserDefinedTypeDeclarationAndInitialisation	= .
-
-//Paragraph 18 ----------------------------------------------
-// ----------------------------------------------------------
-StatementPredicatedFunctionCall		= .
 
 
 %%
@@ -304,8 +206,9 @@ StatementPredicatedFunctionCall		= .
 
 
  // ----OTHER----
-{ExpressionFieldReference}  { return createSymbol(sym.FIELD_REF,yytext()); }
-{Identifier} 				{ return createSymbol(sym.ID,yytext()); 		}
+{Identifier} 				{ return createSymbol(sym.ID, yytext());	}
+{SequenceLengthParameter} 	{ return createSymbol(sym.LEN);	}
+
 
 
 // ----PUNCTUATION----
@@ -313,8 +216,8 @@ StatementPredicatedFunctionCall		= .
     //  Brackets
     {LeftBracket} 			{ return createSymbol(sym.BRACKET_L); 	}
 	{RightBracket} 			{ return createSymbol(sym.BRACKET_R); 	}
-    {LeftSquareBracket} 	{ return createSymbol(sym.BRACKET_SL); }
-	{RightSquareBracket} 	{ return createSymbol(sym.BRACKET_SR); }
+    {LeftSquareBracket} 	{ return createSymbol(sym.BRACKET_SL);  }
+	{RightSquareBracket} 	{ return createSymbol(sym.BRACKET_SR);  }
 	{LeftCurlyBracket} 		{ return createSymbol(sym.CURLY_L); 	}
 	{RightCurlyBracket} 	{ return createSymbol(sym.CURLY_R); 	}
 	{LeftAngleBracket} 		{ return createSymbol(sym.ANGLE_L); 	}
@@ -337,13 +240,13 @@ StatementPredicatedFunctionCall		= .
 	{KeywordMain} 			{ return createSymbol(sym.MAIN); 		}
 
     //  Control Flow
-    {KeywordIf} 			{ return createSymbol(sym.IF); 		}
-    {KeywordIfTerminator} 	{ return createSymbol(sym.FI); 		}
+    {KeywordIf} 			{ return createSymbol(sym.IF); 			}
+    {KeywordIfTerminator} 	{ return createSymbol(sym.FI); 			}
 	{KeywordThen} 			{ return createSymbol(sym.THEN); 		}
 	{KeywordElse} 			{ return createSymbol(sym.ELSE); 		}
 	{KeywordLoop} 			{ return createSymbol(sym.LOOP); 		}
 	{KeywordLoopTerminator} { return createSymbol(sym.POOL); 		}
-	{KeywordReturn} 		{ return createSymbol(sym.RETURN); 	}
+	{KeywordReturn} 		{ return createSymbol(sym.RETURN); 		}
 	{KeywordBreak} 			{ return createSymbol(sym.BREAK); 		}
       
     //  IO
@@ -357,13 +260,13 @@ StatementPredicatedFunctionCall		= .
     {DataTypeInt} 			{ return createSymbol(sym.TYPE_INT); 	}
 	{DataTypeBool}			{ return createSymbol(sym.TYPE_BOOL); 	}
 	{DataTypeRat} 			{ return createSymbol(sym.TYPE_RAT); 	}
-	{DataTypeFloat}			{ return createSymbol(sym.TYPE_FLOAT); }
+	{DataTypeFloat}			{ return createSymbol(sym.TYPE_FLOAT); 	}
 	{DataTypeChar} 			{ return createSymbol(sym.TYPE_CHAR); 	}
       
     //  Aggregate
     {KeywordDict}			{ return createSymbol(sym.DICT); 		}
 	{KeywordSeq} 			{ return createSymbol(sym.SEQ); 		}
-	{DataTypeString}		{ return createSymbol(sym.TYPE_STRING);}
+	{DataTypeString}		{ return createSymbol(sym.TYPE_STRING);	}
     
     //  Other
     {DataTypeTop} 			{ return createSymbol(sym.TOP); 		}
@@ -372,11 +275,11 @@ StatementPredicatedFunctionCall		= .
 // ----LITERALS----
 
     //  Primitive
-    {LiteralInt} 			{ return createSymbol(sym.LIT_INT,yytext()); 		}
-	{ValueBool} 			{ return createSymbol(sym.VAL_BOOL,yytext()); 		}
-	{LiteralRational} 		{ return createSymbol(sym.LIT_RAT,yytext()); 		}
-	{LiteralFloat} 			{ return createSymbol(sym.LIT_FLOAT,yytext()); 	}
-	{LiteralChar} 			{ return createSymbol(sym.LIT_CHAR,yytext()); 		}
+    {LiteralInt} 			{ return createSymbol(sym.LIT_INT, yytext()); 		}
+	{ValueBool} 			{ return createSymbol(sym.VAL_BOOL, yytext()); 		}
+	{LiteralRational} 		{ return createSymbol(sym.LIT_RAT, yytext()); 		}
+	{LiteralFloat} 			{ return createSymbol(sym.LIT_FLOAT, yytext()); 	}
+	{LiteralChar} 			{ return createSymbol(sym.LIT_CHAR, yytext()); 		}
 
     //  Aggregate
     {LiteralString} 		{ return createSymbol(sym.LIT_STRING,yytext()); 	}
@@ -390,7 +293,7 @@ StatementPredicatedFunctionCall		= .
     //  Boolean Operators
     {OperatorNot} 			{ return createSymbol(sym.NOT); 					}
 	{OperatorAnd} 			{ return createSymbol(sym.AND); 					}
-	{OperatorOr} 			{ return createSymbol(sym.OR); 					}
+	{OperatorOr} 			{ return createSymbol(sym.OR); 						}
 	{OperatorImplies} 		{ return createSymbol(sym.IMPLIES); 				}
 	
       
@@ -399,15 +302,15 @@ StatementPredicatedFunctionCall		= .
     {OperatorPlus} 			{ return createSymbol(sym.PLUS); 					}
 	{OperatorMinus} 		{ return createSymbol(sym.MINUS); 					}
 	{OperatorMultiplication}{ return createSymbol(sym.MULTIPLY); 				}
-	{OperatorDivision} 		{ return createSymbol(sym.DIVIDE); 				}
+	{OperatorDivision} 		{ return createSymbol(sym.DIVIDE); 					}
 	{OperatorPower} 		{ return createSymbol(sym.POWER); 					}
 	
 
 
 
     //  Dictionary/Sequence Operators
-    {OperatorIn} 			{ return createSymbol(sym.IN); 					}
-	{OperatorSequenceConcatenation} { return createSymbol(sym.CONCAT); 		}
+    {OperatorIn} 			{ return createSymbol(sym.IN); 						}
+	{OperatorSequenceConcatenation} { return createSymbol(sym.CONCAT); 			}
 
     //  Comparison Operators
     {OperatorLessThan} 		{ return createSymbol(sym.LESS_THAN); 				}
@@ -416,7 +319,7 @@ StatementPredicatedFunctionCall		= .
 	{OperatorNotEqual} 		{ return createSymbol(sym.NOT_EQUAL);				}
 
     //  Other
-    {OperatorAssignment} 	{ return createSymbol(sym.ASSIGNMENT); 			}
+    {OperatorAssignment} 	{ return createSymbol(sym.ASSIGNMENT); 				}
 
 
 // End of File
