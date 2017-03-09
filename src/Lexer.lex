@@ -427,7 +427,7 @@ StatementPredicatedFunctionCall		= .
  * Unmatched input
  * -----------------------------------------------------------------------------------------
  */
-. {
+. | <<EOF>> {
 	syntax_error(sym.ERROR);
   }
 

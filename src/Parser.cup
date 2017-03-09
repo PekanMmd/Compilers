@@ -88,8 +88,6 @@ terminal  EOF, ERROR, FIELD_REF, ID;
       terminal ASSIGNMENT;
 
       
-
-
 /* -----------------------------------------------------------------------------------------
  * Non Terminals
  * -----------------------------------------------------------------------------------------
@@ -99,29 +97,35 @@ terminal  EOF, ERROR, FIELD_REF, ID;
 non terminal        Program;
 
 // ----DECLARATIONS----
+non terminal        Declaration, Declaration_list;
 non terminal        Declaration_function, Declaration_main, Declaration_type, Declaration_type_alias;
 non terminal        Parameter_function, Parameter_list_function, Parameter_type, Parameter_list_type;
 non terminal        Declaration_variable, Declaration_variable_assignment;
 
-// ----FUNCTION DEFINITIONS----
-non terminal        Func_body, Main_body;
+// ----FUNCTION DECLARATIONS----
+non terminal        Function_body, Main_body;
+non terminal        Legal_declaration_function, Legal_declaration_list_function, Legal_declaration_main, Legal_declaration_list_main;
 
 // ----STATEMENTS----
-non terminal        Statement, Statement_if, Statement_if_else, Statement_loop;
+non terminal        Statement, Statement_list;
+non terminal        Statement_if, Statement_if_else, Statement_loop;
+non terminal        Statement_return, Statement_break, Statement_assignment, Statement_conditioned_function_call
+non terminal        Statement_IO, Statement_input, Statement_output;
 
 // ----EXPRESSIONS----
 non terminal        Expression, Expression_list;
 non terminal        Expression_boolean, Expression_comparison, Expression_numeric, Expression_sequence;
-non terminal        Expression_function_call, Expression_field_reference;
-non terminal        Expression_IO, Expression_read, Expression_write;
+non terminal        Expression_function_predicate, Expression_function_call, Expression_conditioned_function_call,Expression_field_reference;
 non terminal        Expression_dictionary_key, Expression_sequence_index; 
 non terminal        Expression_sequence_slice, Expression_sequence_left_slice, Expression_sequence_right_slice, Expression_sequence_dual_slice, Expression_sequence_empty_slice;
 
 // ----LITERALS----
-non terminal        Literal, Literal_dictionary, Literal_sequence;
+non terminal        Literal;
+non terminal        Literal_dictionary, Literal_sequence;
 
 // ----TYPES----
-non terminal        Type, Type_primitive, Type_number, Type_aggregate, Type_defined; // defined type includes aliases
+non terminal        Type; 
+non terminal        Type_primitive, Type_number, Type_aggregate, Type_defined; // defined type includes aliases
 non terminal        Type_dictionary, Type_sequence;
 non terminal        Type_legal_dictionary_key, Type_legal_dictionary_value, Type_legal_sequence_value;
 non terminal        Type_string;
@@ -140,6 +144,15 @@ precedence left TIMES;
  * Rules
  * -----------------------------------------------------------------------------------------
  */
+
+
+// Stars
+
+
+
+
+// Yaya
+
 
 
 /*
