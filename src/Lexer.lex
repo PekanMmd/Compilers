@@ -146,7 +146,7 @@ LiteralEmptyList	= "[]"
 // ----------------------------------------------------------
 DataTypeString			= "string"
 LiteralString			= "\"" {LegalCharacters}* "\""
-SequenceLengthParameter	= ".length"
+SequenceLengthParameter	= ".len"
 ArbitraryText			= {LegalCharacters}+      
 
 // Table 1 --------------------------------------------------
@@ -295,69 +295,128 @@ StatementPredicatedFunctionCall		= .
 <YYINITIAL> {KeywordAlias} { return new Yytoken(TokenType.ALIAS); }
 <YYINITIAL> {KeywordMain } { return new Yytoken(TokenType.MAIN ); }
 
-// Tokens
-{LiteralInt} 				{ return new Yytoken(TokenType.LIT_INT,yytext()); }
-{KeywordIf} 				{ return new Yytoken(TokenType.IF); }
-{Semicolon} 				{ return new Yytoken(TokenType.SEMICOLON); }
-{LiteralNull} 				{ return new Yytoken(TokenType.NULL); }
-{DictionaryType}			{ return new Yytoken(TokenType.DICT, yytext()); }
-{LiteralSequence} 			{ return new Yytoken(TokenType.SEQ, yytext()); }
-{KeywordAlias} 				{ return new Yytoken(TokenType.ALIAS); }
-{KeywordTdef} 				{ return new Yytoken(TokenType.TDEF); }
-{KeywordFdef} 				{ return new Yytoken(TokenType.FDEF); }
-{KeywordIfTerminator} 		{ return new Yytoken(TokenType.FI); }
-{KeywordThen} 				{ return new Yytoken(TokenType.THEN); }
-{KeywordElse} 				{ return new Yytoken(TokenType.ELSE); }
-{KeywordLoop} 				{ return new Yytoken(TokenType.LOOP); }
-{KeywordLoopTerminator} 	{ return new Yytoken(TokenType.POOL); }
-{KeywordReturn} 			{ return new Yytoken(TokenType.RETURN); }
-{KeywordRead} 				{ return new Yytoken(TokenType.READ); }
-{KeywordPrint} 				{ return new Yytoken(TokenType.PRINT); }
-{KeywordBreak} 				{ return new Yytoken(TokenType.BREAK); }
-{Identifier} 				{ return new Yytoken(TokenType.ID,yytext()); }
-{DataTypeInt} 				{ return new Yytoken(TokenType.TYPE_INT); }
-{DataTypeBool}				{ return new Yytoken(TokenType.TYPE_BOOL); }
-{DataTypeRat} 				{ return new Yytoken(TokenType.TYPE_RAT); }
-{DataTypeFloat} 			{ return new Yytoken(TokenType.TYPE_FLOAT); }
-{DataTypeTop} 				{ return new Yytoken(TokenType.TOP); }
+
+
+/* 	-------------
+ *	Tokens
+ *	-------------
+ */
+
+
+ // ----OTHER----
 {ExpressionFieldReference}  { return new Yytoken(TokenType.FIELD_REF,yytext()); }
-{OperatorNot} 				{ return new Yytoken(TokenType.NOT); }
-{OperatorAnd} { return new Yytoken(TokenType.AND); }
-{OperatorOr} { return new Yytoken(TokenType.OR); }
-{OperatorImplies} { return new Yytoken(TokenType.IMPLIES); }
-{OperatorPlus} { return new Yytoken(TokenType.PLUS); }
-{OperatorMinus} { return new Yytoken(TokenType.MINUS); }
-{OperatorMultiplication} { return new Yytoken(TokenType.MULTIPLY); }
-{OperatorDivision} { return new Yytoken(TokenType.DIVIDE); }
-{OperatorPower} { return new Yytoken(TokenType.POWER); }
-{OperatorIn} { return new Yytoken(TokenType.IN); }
-{OperatorSequenceConcatenation} { return new Yytoken(TokenType.CONCAT); }
-{OperatorLessThan} { return new Yytoken(TokenType.LESS_THAN); }
-{OperatorLessThanOrEqual} { return new Yytoken(TokenType.LESS_OR_EQ); }
-{OperatorEquality} { return new Yytoken(TokenType.EQUAL); }
-{OperatorNotEqual} { return new Yytoken(TokenType.NOT_EQUAL); }
-{OperatorAssignment} { return new Yytoken(TokenType.ASSIGNMENT); }
-{Colon} { return new Yytoken(TokenType.COLON); }
-{Dot} { return new Yytoken(TokenType.DOT); }
-{LeftBracket} { return new Yytoken(TokenType.BRACKET_L); }
-{RightBracket} { return new Yytoken(TokenType.BRACKET_R); }
-{LeftSquareBracket} { return new Yytoken(TokenType.BRACKET_SL); }
-{RightSquareBracket} { return new Yytoken(TokenType.BRACKET_SR); }
-{Comma} { return new Yytoken(TokenType.COMMA); }
-{DataTypeString} { return new Yytoken(TokenType.TYPE_STRING); }
-{DataTypeChar} { return new Yytoken(TokenType.TYPE_CHAR); }
-{QuestionMark} { return new Yytoken(TokenType.QUES_MARK); }
-{KeywordMain} { return new Yytoken(TokenType.MAIN); }
-{LeftCurlyBracket} { return new Yytoken(TokenType.CURLY_L); }
-{RightCurlyBracket} { return new Yytoken(TokenType.CURLY_R); }
-{LeftAngleBracket} { return new Yytoken(TokenType.ANGLE_L); }
-{RightAngleBracket} { return new Yytoken(TokenType.ANGLE_R); }
-{LiteralInt} { return new Yytoken(TokenType.LIT_INT,yytext()); }
-{ValueBool} { return new Yytoken(TokenType.VAL_BOOL,yytext()); }
-{LiteralRational} { return new Yytoken(TokenType.LIT_RAT,yytext()); }
-{LiteralFloat} { return new Yytoken(TokenType.LIT_FLOAT,yytext()); }
-{LiteralChar} { return new Yytoken(TokenType.LIT_CHAR,yytext()); }
-{LiteralString} { return new Yytoken(TokenType.LIT_STRING,yytext()); }
+{Identifier} 				{ return new Yytoken(TokenType.ID,yytext()); 		}
+
+
+// ----PUNCTUATION----
+
+    //  Brackets
+    {LeftBracket} 			{ return new Yytoken(TokenType.BRACKET_L); 	}
+	{RightBracket} 			{ return new Yytoken(TokenType.BRACKET_R); 	}
+    {LeftSquareBracket} 	{ return new Yytoken(TokenType.BRACKET_SL); }
+	{RightSquareBracket} 	{ return new Yytoken(TokenType.BRACKET_SR); }
+	{LeftCurlyBracket} 		{ return new Yytoken(TokenType.CURLY_L); 	}
+	{RightCurlyBracket} 	{ return new Yytoken(TokenType.CURLY_R); 	}
+	{LeftAngleBracket} 		{ return new Yytoken(TokenType.ANGLE_L); 	}
+	{RightAngleBracket} 	{ return new Yytoken(TokenType.ANGLE_R); 	}
+
+    //  Other
+    {Semicolon} 			{ return new Yytoken(TokenType.SEMICOLON); 	}
+    {Colon} 				{ return new Yytoken(TokenType.COLON); 		}
+	{Dot} 					{ return new Yytoken(TokenType.DOT); 		}
+	{Comma} 				{ return new Yytoken(TokenType.COMMA);		}
+	{QuestionMark} 			{ return new Yytoken(TokenType.QUES_MARK); 	}
+
+
+// ----KEYWORDS----
+
+    //  Declaration
+    {KeywordAlias} 			{ return new Yytoken(TokenType.ALIAS); 		}
+	{KeywordTdef} 			{ return new Yytoken(TokenType.TDEF); 		}
+	{KeywordFdef} 			{ return new Yytoken(TokenType.FDEF); 		}
+	{KeywordMain} 			{ return new Yytoken(TokenType.MAIN); 		}
+
+    //  Control Flow
+    {KeywordIf} 			{ return new Yytoken(TokenType.IF); 		}
+    {KeywordIfTerminator} 	{ return new Yytoken(TokenType.FI); 		}
+	{KeywordThen} 			{ return new Yytoken(TokenType.THEN); 		}
+	{KeywordElse} 			{ return new Yytoken(TokenType.ELSE); 		}
+	{KeywordLoop} 			{ return new Yytoken(TokenType.LOOP); 		}
+	{KeywordLoopTerminator} { return new Yytoken(TokenType.POOL); 		}
+	{KeywordReturn} 		{ return new Yytoken(TokenType.RETURN); 	}
+	{KeywordBreak} 			{ return new Yytoken(TokenType.BREAK); 		}
+      
+    //  IO
+    {KeywordRead} 			{ return new Yytoken(TokenType.READ); 		}
+	{KeywordPrint} 			{ return new Yytoken(TokenType.PRINT); 		}
+
+
+// ----DATA TYPES----
+
+    //  Primitive
+    {DataTypeInt} 			{ return new Yytoken(TokenType.TYPE_INT); 	}
+	{DataTypeBool}			{ return new Yytoken(TokenType.TYPE_BOOL); 	}
+	{DataTypeRat} 			{ return new Yytoken(TokenType.TYPE_RAT); 	}
+	{DataTypeFloat}			{ return new Yytoken(TokenType.TYPE_FLOAT); }
+	{DataTypeChar} 			{ return new Yytoken(TokenType.TYPE_CHAR); 	}
+      
+    //  Aggregate
+    {KeywordDict}			{ return new Yytoken(TokenType.DICT); 		}
+	{KeywordSeq} 			{ return new Yytoken(TokenType.SEQ); 		}
+	{DataTypeString}		{ return new Yytoken(TokenType.TYPE_STRING);}
+    
+    //  Other
+    {DataTypeTop} 			{ return new Yytoken(TokenType.TOP); 		}
+
+
+// ----LITERALS----
+
+    //  Primitive
+    {LiteralInt} 			{ return new Yytoken(TokenType.LIT_INT,yytext()); 		}
+	{ValueBool} 			{ return new Yytoken(TokenType.VAL_BOOL,yytext()); 		}
+	{LiteralRational} 		{ return new Yytoken(TokenType.LIT_RAT,yytext()); 		}
+	{LiteralFloat} 			{ return new Yytoken(TokenType.LIT_FLOAT,yytext()); 	}
+	{LiteralChar} 			{ return new Yytoken(TokenType.LIT_CHAR,yytext()); 		}
+
+    //  Aggregate
+    {LiteralString} 		{ return new Yytoken(TokenType.LIT_STRING,yytext()); 	}
+
+    //  Other
+	{LiteralNull} 			{ return new Yytoken(TokenType.NULL); 					}
+
+
+// ----OPERATORS----
+
+    //  Boolean Operators
+    {OperatorNot} 			{ return new Yytoken(TokenType.NOT); 					}
+	{OperatorAnd} 			{ return new Yytoken(TokenType.AND); 					}
+	{OperatorOr} 			{ return new Yytoken(TokenType.OR); 					}
+	{OperatorImplies} 		{ return new Yytoken(TokenType.IMPLIES); 				}
+	
+      
+
+    //  Numeric Operators
+    {OperatorPlus} 			{ return new Yytoken(TokenType.PLUS); 					}
+	{OperatorMinus} 		{ return new Yytoken(TokenType.MINUS); 					}
+	{OperatorMultiplication}{ return new Yytoken(TokenType.MULTIPLY); 				}
+	{OperatorDivision} 		{ return new Yytoken(TokenType.DIVIDE); 				}
+	{OperatorPower} 		{ return new Yytoken(TokenType.POWER); 					}
+	
+
+
+
+    //  Dictionary/Sequence Operators
+    {OperatorIn} 			{ return new Yytoken(TokenType.IN); 					}
+	{OperatorSequenceConcatenation} { return new Yytoken(TokenType.CONCAT); 		}
+
+    //  Comparison Operators
+    {OperatorLessThan} 		{ return new Yytoken(TokenType.LESS_THAN); 				}
+	{OperatorLessThanOrEqual} { return new Yytoken(TokenType.LESS_OR_EQ); 			}
+	{OperatorEquality} 		{ return new Yytoken(TokenType.EQUAL); 					}
+	{OperatorNotEqual} 		{ return new Yytoken(TokenType.NOT_EQUAL);				}
+
+    //  Other
+    {OperatorAssignment} 	{ return new Yytoken(TokenType.ASSIGNMENT); 			}
 
 
 // End of File
