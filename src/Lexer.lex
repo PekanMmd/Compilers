@@ -8,64 +8,71 @@ import java.util.*
 
 class TokenType {
 
-	private final static int EOF 		=  0;
-	private final static int IF 		=  1;
-	private final static int SEMICOLON  =  2;
-	private final static int NULL 		=  3;
-	private final static int DICT 		=  4;
-	private final static int SEQ 		=  5;
-	private final static int ALIAS 		=  6;
-	private final static int TDEF 		=  7;
-	private final static int FDEF 		=  8;
-	private final static int FI 		=  9;
-	private final static int THEN 		= 10;
-	private final static int ELSE 		= 11;
-	private final static int LOOP 		= 12;
-	private final static int POOL 		= 13;
-	private final static int RETURN 	= 14;
-	private final static int READ 		= 15;
-	private final static int PRINT 		= 16;
-	private final static int BREAK 		= 17;
-	private final static int ID 		= 18;
-	private final static int BOOLEAN 	= 19;
-	private final static int INT 		= 20;
-	private final static int RAT    	= 21;
-	private final static int FLOAT   	= 22;
-	private final static int TOP 		= 23;
-	private final static int FIELD_REF 	= 24;
-	private final static int NOT    	= 25;
-	private final static int AND    	= 26;
-	private final static int OR     	= 27;
-	private final static int IMPLIES 	= 28;
-	private final static int PLUS 	    = 29;
-	private final static int MINUS 	    = 30;
-	private final static int MULTIPLY 	= 31;
-	private final static int DIVIDE 	= 32;
-	private final static int POWER  	= 33;
-	private final static int IN 	    = 34;
-	private final static int CONCAT 	= 35;
-	private final static int LESS_THAN 	= 36;
-	private final static int MORE_THAN 	= 37;
-	private final static int LESS_OR_EQ = 38;
-	private final static int MORE_OR_EQ = 39;
-	private final static int EQUAL 	    = 40;
-	private final static int NOT_EQUAL 	= 41;
-	private final static int ASSIGNMENT = 42;
-	private final static int COLON 	    = 43;
-	private final static int DOT 	    = 44;
-	private final static int BRACKET_L 	= 45;
-	private final static int BRACKET_R 	= 46;
-	private final static int BRACKET_SL = 47;
-	private final static int BRACKET_RL = 48;
-	private final static int COMMA   	= 49;
-	private final static int STRING 	= 50;
-	private final static int CHAR   	= 51;
-	private final static int QUES_MARK 	= 52;
-	private final static int MAIN 	    = 53;
-	private final static int CURLY_R 	= 54;
-	private final static int CURLY_L 	= 55;
-	private final static int ANGLE_L 	= 56;
-	private final static int ANGLE_R 	= 57;
+	private final static int EOF 		 =  0;
+	private final static int IF 		 =  1;
+	private final static int SEMICOLON   =  2;
+	private final static int NULL 		 =  3;
+	private final static int DICT   	 =  4;
+	private final static int SEQ    	 =  5;
+	private final static int ALIAS 		 =  6;
+	private final static int TDEF 		 =  7;
+	private final static int FDEF 		 =  8;
+	private final static int FI 		 =  9;
+	private final static int THEN 		 = 10;
+	private final static int ELSE 		 = 11;
+	private final static int LOOP 		 = 12;
+	private final static int POOL 		 = 13;
+	private final static int RETURN 	 = 14;
+	private final static int READ 		 = 15;
+	private final static int PRINT 		 = 16;
+	private final static int BREAK 		 = 17;
+	private final static int ID 		 = 18;
+	private final static int TYPE_BOOL 	 = 19;
+	private final static int TYPE_INT 	 = 20;
+	private final static int TYPE_RAT    = 21;
+	private final static int TYPE_FLOAT  = 22;
+	private final static int TOP 		 = 23;
+	private final static int FIELD_REF 	 = 24;
+	private final static int NOT    	 = 25;
+	private final static int AND    	 = 26;
+	private final static int OR     	 = 27;
+	private final static int IMPLIES 	 = 28;
+	private final static int PLUS 	     = 29;
+	private final static int MINUS 	     = 30;
+	private final static int MULTIPLY 	 = 31;
+	private final static int DIVIDE 	 = 32;
+	private final static int POWER  	 = 33;
+	private final static int IN 	     = 34;
+	private final static int CONCAT 	 = 35;
+	private final static int LESS_THAN 	 = 36;
+	private final static int LESS_OR_EQ  = 37;
+	private final static int EQUAL 	     = 38;
+	private final static int NOT_EQUAL 	 = 39;
+	private final static int ASSIGNMENT  = 40;
+	private final static int COLON 	     = 41;
+	private final static int DOT 	     = 42;
+	private final static int BRACKET_L 	 = 43;
+	private final static int BRACKET_R 	 = 44;
+	private final static int BRACKET_SL  = 45;
+	private final static int BRACKET_RL  = 46;
+	private final static int COMMA   	 = 47;
+	private final static int TYPE_STRING = 48;
+	private final static int TYPE_CHAR   = 49;
+	private final static int QUES_MARK 	 = 50;
+	private final static int MAIN 	     = 51;
+	private final static int CURLY_R 	 = 52;
+	private final static int CURLY_L 	 = 53;
+	private final static int ANGLE_L 	 = 54;
+	private final static int ANGLE_R 	 = 55;
+	private final static int LIT_INT 	 = 56;
+	private final static int VAL_BOOL 	 = 57;
+	private final static int LIT_RAT 	 = 58;
+	private final static int LIT_FLOAT 	 = 59;
+	private final static int LIT_CHAR 	 = 60;
+	private final static int LIT_STRING  = 61;
+	
+
+
 
 
 }
@@ -110,10 +117,21 @@ class Yytoken {
 // Regex Macros
 // ----------------------------------------------------------
 
-LineTerminator	= "\r"|"\n"|"\r\n"
-WhiteSpace    	= {LineTerminator} | [ \t\f]
-Semicolon		= ";"
-Colon 			= ":"
+LineTerminator	   = "\r"|"\n"|"\r\n"
+WhiteSpace    	   = {LineTerminator} | [ \t\f]
+Semicolon		   = ";"
+Colon 			   = ":"
+Dot 			   = "."
+LeftBracket		   = "("
+RightBracket       = ")"
+LeftSquareBracket  = "["
+RightSquareBracket = "]"
+LeftCurlyBracket   = "{"
+RightCurlyBracket  = "}"
+LeftAngleBracket   = "<"
+RightAngleBracket  = ">"
+Comma              = ","
+QuestionMark       = "?"
 
 // Literals
 LiteralNull		= "null"
@@ -200,6 +218,7 @@ LiteralEmptyList	= "[]"
 
 //Paragraph 10 ----------------------------------------------
 // ----------------------------------------------------------
+DataTypeString			= "string"
 LiteralString			= "\"" {LegalCharacters}* "\""
 SequenceLengthParameter	= ".length"
 ArbitraryText			= {LegalCharacters}+      
@@ -356,7 +375,72 @@ StatementPredicatedFunctionCall		= .
 // ----------------------------------------------------------
 // Tokeniser
 // ----------------------------------------------------------
-{LiteralInt} { return new Yytoken(TokenType.INT,yytext()); }
+{LiteralInt} { return new Yytoken(TokenType.LIT_INT,yytext()); }
+{KeywordIf} { return new Yytoken(TokenType.IF); }
+{Semicolon} { return new Yytoken(TokenType.SEMICOLON); }
+{LiteralNull} { return new Yytoken(TokenType.NULL); }
+{DictionaryType} { return new Yytoken(TokenType.DICT, yytext()); }
+{LiteralSequence} { return new Yytoken(TokenType.SEQ, yytext()); }
+{KeywordAlias} { return new Yytoken(TokenType.ALIAS); }
+{KeywordTdef} { return new Yytoken(TokenType.TDEF); }
+{KeywordFdef} { return new Yytoken(TokenType.FDEF); }
+{KeywordIfTerminator} { return new Yytoken(TokenType.FI); }
+{KeywordThen} { return new Yytoken(TokenType.THEN); }
+{KeywordElse} { return new Yytoken(TokenType.ELSE); }
+{KeywordLoop} { return new Yytoken(TokenType.LOOP); }
+{KeywordLoopTerminator} { return new Yytoken(TokenType.POOL); }
+{KeywordReturn} { return new Yytoken(TokenType.RETURN); }
+{KeywordRead} { return new Yytoken(TokenType.READ); }
+{KeywordPrint} { return new Yytoken(TokenType.PRINT); }
+{KeywordBreak} { return new Yytoken(TokenType.BREAK); }
+{Identifier} { return new Yytoken(TokenType.ID,yytext()); }
+{DataTypeInt} { return new Yytoken(TokenType.TYPE_INT); }
+{DataTypeBool} { return new Yytoken(TokenType.TYPE_BOOL); }
+{DataTypeRat} { return new Yytoken(TokenType.TYPE_RAT); }
+{DataTypeFloat} { return new Yytoken(TokenType.TYPE_FLOAT); }
+{DataTypeTop} { return new Yytoken(TokenType.TOP); }
+{ExpressionFieldReference} { return new Yytoken(TokenType.FIELD_REF,yytext()); }
+{OperatorNot} { return new Yytoken(TokenType.NOT); }
+{OperatorAnd} { return new Yytoken(TokenType.AND); }
+{OperatorOr} { return new Yytoken(TokenType.OR); }
+{OperatorImplies} { return new Yytoken(TokenType.IMPLIES); }
+{OperatorPlus} { return new Yytoken(TokenType.PLUS); }
+{OperatorMinus} { return new Yytoken(TokenType.MINUS); }
+{OperatorMultiplication} { return new Yytoken(TokenType.MULTIPLY); }
+{OperatorDivision} { return new Yytoken(TokenType.DIVIDE); }
+{OperatorPower} { return new Yytoken(TokenType.POWER); }
+{OperatorIn} { return new Yytoken(TokenType.IN); }
+{OperatorSequenceConcatenation} { return new Yytoken(TokenType.CONCAT); }
+{OperatorLessThan} { return new Yytoken(TokenType.LESS_THAN); }
+{OperatorLessThanOrEqual} { return new Yytoken(TokenType.LESS_OR_EQ); }
+{OperatorEquality} { return new Yytoken(TokenType.EQUAL); }
+{OperatorNotEqual} { return new Yytoken(TokenType.NOT_EQUAL); }
+{OperatorAssignment} { return new Yytoken(TokenType.ASSIGNMENT); }
+{Colon} { return new Yytoken(TokenType.COLON); }
+{Dot} { return new Yytoken(TokenType.DOT); }
+{LeftBracket} { return new Yytoken(TokenType.BRACKET_L); }
+{RightBracket} { return new Yytoken(TokenType.BRACKET_R); }
+{LeftSquareBracket} { return new Yytoken(TokenType.BRACKET_SL); }
+{RightSquareBracket} { return new Yytoken(TokenType.BRACKET_SR); }
+{Comma} { return new Yytoken(TokenType.COMMA); }
+{DataTypeString} { return new Yytoken(TokenType.TYPE_STRING); }
+{DataTypeChar} { return new Yytoken(TokenType.TYPE_CHAR); }
+{QuestionMark} { return new Yytoken(TokenType.QUES_MARK); }
+{KeywordMain} { return new Yytoken(TokenType.MAIN); }
+{LeftCurlyBracket} { return new Yytoken(TokenType.CURLY_L); }
+{RightCurlyBracket} { return new Yytoken(TokenType.CURLY_R); }
+{LeftAngleBracket} { return new Yytoken(TokenType.ANGLE_L); }
+{RightAngleBracket} { return new Yytoken(TokenType.ANGLE_R); }
+{LiteralInt} { return new Yytoken(TokenType.LIT_INT,yytext()); }
+{ValueBool} { return new Yytoken(TokenType.VAL_BOOL,yytext()); }
+{LiteralRational} { return new Yytoken(TokenType.LIT_RAT,yytext()); }
+{LiteralFloat} { return new Yytoken(TokenType.LIT_FLOAT,yytext()); }
+{LiteralChar} { return new Yytoken(TokenType.LIT_CHAR,yytext()); }
+{LiteralString} { return new Yytoken(TokenType.LIT_STRING,yytext()); }
+
+
+
+
 
 // ----------------------------------------------------------
 // End of file
