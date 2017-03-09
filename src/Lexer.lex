@@ -9,9 +9,9 @@ import java.util.*
 
 class TokenType {
 
-	private final static int EOF 		 =  0;
-	private final static int IF 		 =  1;
-	private final static int SEMICOLON   =  2;
+	private final static int EOF 		 =  0;	-
+	private final static int IF 		 =  1;	
+	private final static int SEMICOLON   =  2;	-
 	private final static int NULL 		 =  3;
 	private final static int DICT   	 =  4;
 	private final static int SEQ    	 =  5;
@@ -52,26 +52,26 @@ class TokenType {
 	private final static int ASSIGNMENT  = 40;
 	private final static int COLON 	     = 41;
 	private final static int DOT 	     = 42;
-	private final static int BRACKET_L 	 = 43;
-	private final static int BRACKET_R 	 = 44;
-	private final static int BRACKET_SL  = 45;
-	private final static int BRACKET_RL  = 46;
-	private final static int COMMA   	 = 47;
+	private final static int BRACKET_L 	 = 43;	-
+	private final static int BRACKET_R 	 = 44;	-
+	private final static int BRACKET_SL  = 45;	-
+	private final static int BRACKET_RL  = 46;	-
+	private final static int COMMA   	 = 47;	-
 	private final static int TYPE_STRING = 48;
 	private final static int TYPE_CHAR   = 49;
-	private final static int QUES_MARK 	 = 50;
+	private final static int QUES_MARK 	 = 50;	-
 	private final static int MAIN 	     = 51;
-	private final static int CURLY_R 	 = 52;
-	private final static int CURLY_L 	 = 53;
-	private final static int ANGLE_L 	 = 54;
-	private final static int ANGLE_R 	 = 55;
+	private final static int CURLY_R 	 = 52;	-
+	private final static int CURLY_L 	 = 53;	-
+	private final static int ANGLE_L 	 = 54;	-
+	private final static int ANGLE_R 	 = 55;	-
 	private final static int LIT_INT 	 = 56;
 	private final static int VAL_BOOL 	 = 57;
 	private final static int LIT_RAT 	 = 58;
 	private final static int LIT_FLOAT 	 = 59;
 	private final static int LIT_CHAR 	 = 60;
 	private final static int LIT_STRING  = 61;
-	
+
 
 
 
@@ -118,7 +118,6 @@ WhiteSpace    	= {LineTerminator} | [ \t\f]
 Semicolon			= ";"
 Colon 				= ":"
 Semicolon		   = ";"
-Colon 			   = ":"
 Dot 			   = "."
 LeftBracket		   = "("
 RightBracket       = ")"
@@ -430,6 +429,7 @@ StatementPredicatedFunctionCall		= .
 {LiteralFloat} { return new Yytoken(TokenType.LIT_FLOAT,yytext()); }
 {LiteralChar} { return new Yytoken(TokenType.LIT_CHAR,yytext()); }
 {LiteralString} { return new Yytoken(TokenType.LIT_STRING,yytext()); }
+
 
 // End of File
 <YYINITIAL,STATE_COMMENT_SINGLE> <<EOF>> {return new Yytoken(TokenType.EOF);}
