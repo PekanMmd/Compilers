@@ -33,8 +33,8 @@ terminal Integer    NUMBER;        // our scanner provides numbers as integers
 // ˜Z Program
 non terminal        Program;
 
-// Definitions and Declarations
-non terminal        Definition_function, Definition_main, Declaration_variable, Declaration_type, Declaration_type_alias;
+// Declarations
+non terminal        Declaration_function, Declaration_main, Declaration_variable, Declaration_type, Declaration_type_alias;
 non terminal        Parameter_function, Parameter_list_function, Parameter_type, Parameter_list_type;
 
 // Function Definitions
@@ -45,7 +45,16 @@ non terminal        Statement, Statement_if, Statement_if_else, Statement_loop;
 
 // Expressions
 non terminal        Expression, Expression_list, Literal;
-non terminal        Expression_boolean, Expression_comparison, Expression_numeric, Expression_sequence, Expression_function_call;
+non terminal        Expression_boolean, Expression_comparison, Expression_numeric, Expression_sequence;
+non terminal        Expression_function_call, Expression_field_reference;
+non terminal        Expression_IO, Expression_read, Expression_write;
+
+// Types
+non terminal        Type, Type_primitive, Type_aggregate, Type_defined; // defined type includes aliases
+non terminal        Type_dictionary, Type_sequence;
+non terminal        Type_legal_dictionary_key, Type_legal_dictionary_value, Type_legal_sequence_value;
+non terminal        Type_string;
+
 
 
 
@@ -61,6 +70,7 @@ precedence left UMINUS;
  * Rules
  * -----------------------------------------------------------------------------------------
  */
+
 expr_list ::= expr_list expr:e SEMI         {: System.out.println(e);:}
             | expr:e SEMI                   {: System.out.println(e);:}
 ;
@@ -72,3 +82,28 @@ expr      ::= expr:e1 PLUS  expr:e2         {: RESULT = e1+e2;       :}
        | LPAREN expr:e RPAREN	         {: RESULT = e;           :}
        | NUMBER:n	                     {: RESULT = n;           :}
              ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+             
