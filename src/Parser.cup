@@ -1,30 +1,49 @@
-/* Parser by Megan Lucas, Nadia Mahgerefteh and Stars Momodu*/
+// Parser by Megan Lucas, Nadia Mahgerefteh and Stars Momodu
 import java_cup.runtime.*;
 import Lexer.java;
 
 parser code {:
-    // Parser needs access to lexer
-    Lexer lexer;
-    Parser(Lexer lexer){ this.lexer=lexer; }
+
+  Boolean syntaxErrors = false;
+  Lexer lexer;
+
+  public Parser(Lexer lex) {
+    this.lexer = lex;
+  } 
+
+  public void syntax_error(Symbol current_token) { report_error(
+     "Syntax error at line " + (current_token.left+1) + ", column " + current_token.right, null );
+  }
 :}
 
-//init with {: lexer.init(); :};
 scan with {: return lexer.next_token(); :};
 
-/* Terminals (tokens returned by the scanner). */
+/* -----------------------------------------------------------------------------------------
+ * Terminals
+ * -----------------------------------------------------------------------------------------
+ */
 terminal            SEMI, PLUS, MINUS, TIMES, UMINUS, LPAREN, RPAREN;
 terminal Integer    NUMBER;        // our scanner provides numbers as integers
 
-/* Non terminals */
+/* -----------------------------------------------------------------------------------------
+ * Non Terminals
+ * -----------------------------------------------------------------------------------------
+ */
 non terminal            expr_list;
 non terminal Integer    expr;      // used to store evaluated subexpressions
 
-/* Precedences */
+/* -----------------------------------------------------------------------------------------
+ * Precedences
+ * -----------------------------------------------------------------------------------------
+ */
 precedence left PLUS, MINUS;
 precedence left TIMES;
 precedence left UMINUS;
 
-/* The grammar rules */
+/* -----------------------------------------------------------------------------------------
+ * Rules
+ * -----------------------------------------------------------------------------------------
+ */
 expr_list ::= expr_list expr:e SEMI         {: System.out.println(e);:}
             | expr:e SEMI                   {: System.out.println(e);:}
 ;

@@ -1,9 +1,10 @@
-/*Lexer by Megan Lucas, Nadia Mahgerefteh and Stars Momodu*/
+// Lexer by Megan Lucas, Nadia Mahgerefteh and Stars Momodu
 
-// ----------------------------------------------------------
-// User Code
-// ----------------------------------------------------------
-
+/* -----------------------------------------------------------------------------------------
+ * User Code
+ * -----------------------------------------------------------------------------------------
+ */
+import java_cup.runtime.*;
 import java.util.*
 
 class TokenType {
@@ -70,48 +71,43 @@ class TokenType {
 
 }
 
-class Yytoken {
+private Symbol symbolWithType(int type) {
+	return new Symbol(type, yyline, yycolumn);
+}
+private Symbol symbolWithTypeAndValue(int type, Object value) {
+	return new Symbol(type, yyline, yycolumn, value);
+}
 
-	Object 	value;
-	int 	tokenType;
-	int 	line;
-	int 	column;
-
-	public Yytoken(int tokenType) {
-		this.tokenType 	= tokenType;
-		this.line 		= Yyline;
-		this.column 	= Yycolumn;
-	}
-
-	public Yytoken(int tokenType, Object value) {
-		this.tokenType 	= tokenType;
-		this.value 		= value;
-		this.line 		= Yyline;
-		this.column 	= Yycolumn;
-	}
+public void syntax_error(Symbol current_token) { report_error(
+     "Syntax error at line " + (current_token.left+1) + ", column " + current_token.right, null );
 }
 
 %%
-// ----------------------------------------------------------
-// Options and Declarations
-// ----------------------------------------------------------
-
+/* -----------------------------------------------------------------------------------------
+ * Options and Declarations
+ * -----------------------------------------------------------------------------------------
+ */
 %class Lexer
 %cup
 %line
 %column
 
-// ----------------------------------------------------------
-// States
-// ----------------------------------------------------------
+/* -----------------------------------------------------------------------------------------
+ * States
+ * -----------------------------------------------------------------------------------------
+ */
 %xstate STATE_COMMENT_SINGLE, STATE_COMMENT_MULTI
 
-// ----------------------------------------------------------
-// Regex Macros
-// ----------------------------------------------------------
+/* -----------------------------------------------------------------------------------------
+ * Macros
+ * -----------------------------------------------------------------------------------------
+ */
 
+// White space
 LineTerminator	= "\r"|"\n"|"\r\n"
 WhiteSpace    	= {LineTerminator} | [ \t\f]
+
+// Punctuation
 Semicolon		= ";"
 Colon 			= ":"
 
@@ -177,8 +173,8 @@ DataTypeFloat = "float"
 
 LiteralPosInt   = "0 | [1-9][0-9]*"
 LiteralInt      = "0 | -?[1-9][0-9]*"
-LiteralRational = [{LiteralInt} / {LiteralPosInt}] | [{LiteralInt} _ {LiteralPosInt} / {LiteralPosInt}]
-LiteralFloat    = [{LiteralInt} . {LiteralPosInt}]
+LiteralRational = ({LiteralInt} "/" {LiteralPosInt}) | ({LiteralInt} _ {LiteralPosInt} "/" {LiteralPosInt})
+LiteralFloat    = {LiteralInt} . {LiteralPosInt}
 LiteralNumber   = {LiteralInt} | {LiteralRational} | {LiteralFloat}
 
 //Paragraph 8 -----------------------------------------------
@@ -189,7 +185,7 @@ LiteralDictionary  		= "{"(({DictionaryType} : {DictionaryType})*)"}"
 DataTypeTop       		= "top"
 LiteralTop				= ({LiteralNumber})   
 
-LiteralEmptyDictionary 	= "{" (^{DictionaryType}) "}"
+LiteralEmptyDictionary 	= "{}"
 
 
 //Paragraph 9 -----------------------------------------------
@@ -206,13 +202,14 @@ ArbitraryText			= {LegalCharacters}+
 
 // Table 1 --------------------------------------------------
 // ----------------------------------------------------------
-DataTypePrimitive = {DataTypeBool} | {DataTypeInt} | {DataTypeRat} | {DataTypeFloat} | {DataTypeChar}
-DataTypeAggregate = {DataTypeDictionary} | {DataTypeSequence}
-DataType          = {DataTypePrimitive} | {DataTypeAggregate}
+DataTypePrimitive 		= {DataTypeBool} | {DataTypeInt} | {DataTypeRat} | {DataTypeFloat} | {DataTypeChar}
+DataTypeAggregate 		= {DataTypeDictionary} | {DataTypeSequence}
+DataType          		= {DataTypePrimitive} | {DataTypeAggregate}
 
-LiteralPrimitive  = {ValueBool} | {LiteralNumber} | {LiteralChar}
-LiteralAggregate  = {LiteralDictionary} | {LiteralEmptyDictionary} | {LiteralEmptyList} | {LiteralSequence} | {LiteralString}
-Literal           = {LiteralPrimitive} | {LiteralAggregate}             
+LiteralPrimitive  		= {ValueBool} | {LiteralNumber} | {LiteralChar}
+LiteralAggregate  		= {LiteralDictionary} | {LiteralEmptyDictionary} | {LiteralEmptyList} | {LiteralSequence} | {LiteralString}
+LiteralDictionaryKey 	= {LiteralPrimitive}
+Literal           		= {LiteralPrimitive} | {LiteralAggregate}             
 
 // Table 2 --------------------------------------------------
 // ----------------------------------------------------------
@@ -237,7 +234,7 @@ NumericaOperator		= ({OperatorPlus} | {OperatorMinus} | {OperatorDivision} | {Op
 OperatorIn 	= "in"
 
 // dictionary operators
-OperatorDictionaryKey 	= //d[k]
+OperatorDictionaryKey 	= "[" {LiteralDictionaryKey} "]"
 DictionaryOperator		= ({OperatorIn} | {OperatorDictionaryKey})
 
 // sequence operators
@@ -326,47 +323,41 @@ StatementPredicatedFunctionCall		= .
 
 
 %%
-// ----------------------------------------------------------
-// Lexical Rules
-// ----------------------------------------------------------
-{WhiteSpace} {}
+/* -----------------------------------------------------------------------------------------
+ * Lexical Rules
+ * -----------------------------------------------------------------------------------------
+ */
+{WhiteSpace} { /* ignored */ }
 
-// ----------------------------------------------------------
 // Comments
-// ----------------------------------------------------------
 {CommentSingleLineBegin} { yybegin(STATE_COMMENT_SINGLE); }
 {CommentMultilineBegin } { yybegin(STATE_COMMENT_MULTI ); }
 
-<STATE_COMMENT_SINGLE> { CommentSingleLineEnd} { yybegin(YYINITIAL); };
-<STATE_COMMENT_SINGLE> . {};
+<STATE_COMMENT_SINGLE> { CommentSingleLineEnd} { yybegin(YYINITIAL); }
+<STATE_COMMENT_SINGLE> . {}
 
-<STATE_COMMENT_MULTI>  { CommentMultiLineEnd} { yybegin(YYINITIAL); };
-<STATE_COMMENT_MULTI>  . {};
+<STATE_COMMENT_MULTI>  { CommentMultiLineEnd} { yybegin(YYINITIAL); }
+<STATE_COMMENT_MULTI>  . {}
 
 
-// ----------------------------------------------------------
 // Initial State
-// ----------------------------------------------------------
 <YYINITIAL> {KeywordTdef } { return new Yytoken(TokenType.TDEF ); }
 <YYINITIAL> {KeywordFdef } { return new Yytoken(TokenType.FDEF ); }
 <YYINITIAL> {KeywordAlias} { return new Yytoken(TokenType.ALIAS); }
 <YYINITIAL> {KeywordMain } { return new Yytoken(TokenType.MAIN ); }
 
-
-// ----------------------------------------------------------
-// Tokeniser
-// ----------------------------------------------------------
 {LiteralInt} { return new Yytoken(TokenType.INT,yytext()); }
 
-// ----------------------------------------------------------
-// End of file
-// ----------------------------------------------------------
+// End of File
 <YYINITIAL,STATE_COMMENT_SINGLE> <<EOF>> {return new Yytoken(TokenType.EOF);}
 
+
+/* -----------------------------------------------------------------------------------------
+ * Unmatched input
+ * -----------------------------------------------------------------------------------------
+ */
 . {
-	report_error(
-         "Syntax error at line " + (yyline+1) + ", column "
-		+ yycolumn, null );
+	syntax_error(sym.ERROR);
   }
 
 
