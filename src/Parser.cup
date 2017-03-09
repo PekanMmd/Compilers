@@ -24,7 +24,7 @@ scan with {: return lexer.next_token(); :};
  */
 
 // ----OTHER----
-terminal  EOF, ERROR, FIELD_REF;
+terminal  EOF, ERROR, FIELD_REF, ID;
 
 
 // ----PUNCTUATION----
@@ -38,8 +38,8 @@ terminal  EOF, ERROR, FIELD_REF;
 
 // ----KEYWORDS----
 
-      //  Data Type Declaration
-      terminal  ALIAS, TDEF, FDEF;
+      //  Declaration
+      terminal  ALIAS, TDEF, FDEF, MAIN;
 
       //  Control Flow
       terminal  IF, FI, THEN, ELSE, LOOP, POOL, RETURN, BREAK;
@@ -82,10 +82,10 @@ terminal  EOF, ERROR, FIELD_REF;
       terminal  IN, CONCAT;
 
       //  Comparison Operators
-      terminal  LESS_THAN, LESS_OR_EQ, EQUAL, NOT_EQUAL
+      terminal  LESS_THAN, LESS_OR_EQ, EQUAL, NOT_EQUAL;
 
       //  Other
-      terminal ASSIGNMENT
+      terminal ASSIGNMENT;
 
       
 
