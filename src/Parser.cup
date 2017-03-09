@@ -22,8 +22,73 @@ scan with {: return lexer.next_token(); :};
  * Terminals
  * -----------------------------------------------------------------------------------------
  */
-terminal            SEMI, PLUS, MINUS, TIMES, UMINUS, LPAREN, RPAREN;
-terminal Integer    NUMBER;        // our scanner provides numbers as integers
+
+// ----OTHER----
+terminal  EOF, ERROR, FIELD_REF;
+
+
+// ----PUNCTUATION----
+
+      //  Brackets
+      terminal  BRACKET_L, BRACKET_R, BRACKET_SL, BRACKET_SR, ANGLE_R, ANGLE_L, CURLY_R, CURLY_L;
+      
+      //  Other
+      terminal  SEMICOLON, COLON, DOT, COMMA, QUES_MARK;     
+
+
+// ----KEYWORDS----
+
+      //  Data Type Declaration
+      terminal  ALIAS, TDEF, FDEF;
+
+      //  Control Flow
+      terminal  IF, FI, THEN, ELSE, LOOP, POOL, RETURN, BREAK;
+      
+      //  IO
+      terminal  READ, PRINT;
+
+
+// ----DATA TYPES----
+
+      //  Primitive
+      terminal  TYPE_BOOL, TYPE_INT, TYPE_FLOAT, TYPE_RAT, TYPE_CHAR;
+
+      //  Aggregate
+      terminal  TYPE_STRING, DICT, SEQ;
+
+      //  Other
+      terminal  TOP;
+
+// ----LITERALS----
+
+      //  Primitive
+      terminal  VAL_BOOL, LIT_INT, LIT_CHAR, LIT_FLOAT, LIT_RAT;
+
+      //  Aggregate
+      terminal  LIT_STRING;
+
+      //  Other
+      terminal  NULL;
+
+// ----OPERATORS----
+
+      //  Boolean Operators
+      terminal  NOT, AND, OR, IMPLIES;
+
+      //  Numeric Operators
+      terminal  PLUS, MINUS, MULTIPLY, DIVIDE, POWER;
+
+      //  Dictionary/Sequence Operators
+      terminal  IN, CONCAT;
+
+      //  Comparison Operators
+      terminal  LESS_THAN, LESS_OR_EQ, EQUAL, NOT_EQUAL
+
+      //  Other
+      terminal ASSIGNMENT
+
+      
+
 
 /* -----------------------------------------------------------------------------------------
  * Non Terminals
