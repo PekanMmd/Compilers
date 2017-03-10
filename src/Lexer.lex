@@ -133,7 +133,6 @@ DataTypeTop       		= "top"
 
 //Paragraph 10 ----------------------------------------------
 // ----------------------------------------------------------
-DataTypeString			= "string"
 LiteralString			= "\"" {LegalCharacters}* "\""
 SequenceLengthParameter	= "len"
         
@@ -264,7 +263,7 @@ Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*)
     //  Aggregate
     {KeywordDict}			{ return createSymbol(sym.DICT); 		}
 	{KeywordSeq} 			{ return createSymbol(sym.SEQ); 		}
-	{DataTypeString}		{ return createSymbol(sym.TYPE_STR);	}
+	//{DataTypeString}		{ return createSymbol(sym.TYPE_STR);	}
     
     //  Other
     {DataTypeTop} 			{ return createSymbol(sym.TOP); 		}
