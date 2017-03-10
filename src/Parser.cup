@@ -144,10 +144,13 @@ terminal ERROR, ID, LEN;
   non terminal        Expression, Expression_list;
 
   // operators
-  non terminal        Expression_boolean, Expression_comparison, Expression_numeric, Expression_sequence, Expression_int, Expression_rat, Expression_float, Expression_unknown;
+  non terminal        Expression_boolean, Expression_comparison, Expression_numeric, Expression_sequence;
+
+  // types
+  non terminal         Expression_dictionary, Expression_int, Expression_rat, Expression_float, Expression_defined, Expression_unknown;
 
   // functions and fields
-  non terminal        Expression_function_predicate, Expression_function_call, Expression_conditioned_function_call, Expression_field_reference;
+  non terminal        Expression_function_predicate, Expression_function_call, Expression_conditioned_function_call, Expression_field_reference, Expression_sequence_length;
 
   // aggregate type value reference
   non terminal        Expression_dictionary_key, Expression_sequence_index; 
@@ -163,7 +166,7 @@ terminal ERROR, ID, LEN;
   non terminal        Literal_Integer;
 
   // aggregate literals
-  non terminal        Literal_dictionary, Literal_sequence, Literal_string;
+  non terminal        Literal_dictionary, Literal_sequence, Literal_string, Literal_defined;
 
   // automatically converted numerical literals 
   non terminal        Literal_rational, Literal_float;
@@ -321,12 +324,20 @@ Statement_input ::= READ ID;
 Statement_output ::= PRINT Expression;
 
 // ----EXPRESSIONS----
-Expression ::= ;
+Expression ::= Expression_boolean 
+             | Expression_numeric
+             | Expression_sequence
+             | Expression_dictionary
+             | Expression_defined
+             | Expression_unknown
+             ;
 
 // operators
 Expression_boolean ::= LIT_BOOL
                      | Expression_boolean Operator_binary_boolean Expression_boolean
                      | Operator_unary_boolean Expression_boolean
+                     | Expression_comparison
+                     | Expression_defined
                      | Expression_unknown
                      ;
 
@@ -336,25 +347,54 @@ Expression_comparison ::= Expression_int Operator_binary_comparison Expression_i
                         | Expression_boolean Operator_binary_comparison Expression_boolean
                         ;
 
-Expression_int ::= Literal_Integer ;
+Expression_int ::= Literal_Integer 
+                 | Expression_int Operator_binary_numeric Expression_int
+                 | Expression_sequence_length
+                 | Expression_unknown
+                 ;
 
 Expression_rat ::= Literal_rational
                  | Expression_rat Operator_binary_numeric Expression_rat
                  | Expression_rat Operator_binary_numeric Expression_int
                  | Expression_int Operator_binary_numeric Expression_rat
+                 | Expression_unknown
                  ;
 
 Expression_float ::= Literal_float
                  | Expression_float Operator_binary_numeric Expression_float
                  | Expression_float Operator_binary_numeric Expression_int
                  | Expression_int Operator_binary_numeric Expression_float
+                 | Expression_unknown
                  ;
 
-Expression_numeric;
+Expression_numeric ::= Expression_int
+                     | Expression_float
+                     | Expression_rat
+                     ;
 
-Expression_sequence;
+Expression_sequence ::= Literal_sequence
+                      | Expression_sequence Operator_binary_sequence Expression_sequence
+                      | Expression_sequence_left_slice
+                      | Expression_sequence_right_slice
+                      | Expression_sequence_dual_slice
+                      | Expression_sequence_empty_slice
+                      | Expression_unknown
+                      ;
 
-Expression_unknown;
+Expression_dictionary ::= Literal_dictionary
+                        | Expression_unknown
+                        ;
+
+Expression_defined ::= Literal_defined
+                     | Expression_unknown
+                     ;
+
+Expression_unknown ::= ID
+                     | Expression_field_reference
+                     | Expression_conditioned_function_call
+                     | Expression_dictionary_key
+                     | Expression_sequence_index
+                     ;
 
 // functions and fields
 Expression_function_predicate;
@@ -362,16 +402,24 @@ Expression_function_call;
 Expression_conditioned_function_call;
 Expression_field_reference;
 
+Expression_sequence_length ::= Expression_sequence DOT LEN;
+
 // aggregate type value reference
-Expression_dictionary_key;
-Expression_sequence_index; 
+Expression_dictionary_key ::= Expression_dictionary BRACKET_SL Expression BRACKET_SR;
+
+Expression_sequence_index ::= Expression_sequence BRACKET_SL Expression_int BRACKET_SR;
 
 // sequence slice
-Expression_sequence_slice;
-Expression_sequence_left_slice;
-Expression_sequence_right_slice;
-Expression_sequence_dual_slice;
-Expression_sequence_empty_slice;
+Expression_sequence_slice ::= Expression_sequence_left_slice
+                            | Expression_sequence_right_slice
+                            | Expression_sequence_dual_slice
+                            | Expression_sequence_empty_slice
+                            ;
+
+Expression_sequence_left_slice  ::= Expression_sequence BRACKET_SL Expression_int COLON BRACKET_SR;
+Expression_sequence_right_slice ::= Expression_sequence BRACKET_SL COLON Expression_int BRACKET_SR;
+Expression_sequence_dual_slice  ::= Expression_sequence BRACKET_SL Expression_int COLON Expression_int BRACKET_SR;
+Expression_sequence_empty_slice ::= Expression_sequence BRACKET_SL COLON BRACKET_SR;
 
 
 
@@ -385,6 +433,7 @@ Literal_Integer;
 Literal_dictionary;
 Literal_sequence;
 Literal_string;
+Literal_defined;
 
 // numerical literals
 Literal_rational ::= LIT_RAT
