@@ -82,7 +82,7 @@ terminal ERROR, ID, LEN;
       terminal  IN, CONCAT;
 
       //  Comparison Operators
-      terminal  LESS_THAN, LESS_OR_EQ, EQUAL, NOT_EQUAL;
+      terminal  LESS_OR_EQ, EQUAL, NOT_EQUAL;
 
       //  Other
       terminal ASSIGNMENT;
@@ -444,8 +444,17 @@ Operator_binary_boolean ::= AND
                           | IMPLIES
                           ;
 
-Operator_binary_comparison;
-Operator_binary_numeric;
+Operator_binary_comparison ::= ANGLE_L
+                              | LESS_OR_EQ
+                              | EQUAL
+                              | NOT_EQUAL
+                              ;
+Operator_binary_numeric ::= PLUS
+                            | MINUS
+                            | MULTIPLY
+                            | DIVIDE
+                            | POWER
+                            ;
 Operator_binary_sequence;
 
 // unary
