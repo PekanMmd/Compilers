@@ -163,7 +163,7 @@ terminal ERROR, ID, LEN;
   non terminal        Literal_Integer;
 
   // aggregate literals
-  non terminal        Literal_dictionary, Literal_sequence, Literal_string;
+  non terminal        Literal_dictionary, Dictionary_entry, Dictionary_entry_list, Literal_sequence, Sequence_entry, Sequence_entry_list, Literal_string;
 
   // automatically converted numerical literals 
   non terminal        Literal_rational, Literal_float;
@@ -187,7 +187,7 @@ terminal ERROR, ID, LEN;
   non terminal        Operator;
 
   // binary
-  non terminal        Operator_binary_boolean, Operator_binary_comparison, Operator_binary_numeric, Operator_binary_sequence;
+  non terminal        Operator_binary_boolean, Operator_binary_comparison, Operator_binary_numeric, Operator_binary_sequence, Operator_binary_dictionary;
 
   // unary
   non terminal        Operator_unary_boolean
@@ -357,9 +357,12 @@ Expression_sequence;
 Expression_unknown;
 
 // functions and fields
-Expression_function_predicate;
-Expression_function_call;
+Expression_function_predicate ::= QUES_MARK Expression QUES_MARK;
+
+Expression_function_call ::= Expression_function_predicate ID BRACKET_L Expression_list BRACKET_R;
+
 Expression_conditioned_function_call;
+
 Expression_field_reference;
 
 // aggregate type value reference
@@ -376,15 +379,38 @@ Expression_sequence_empty_slice;
 
 
 // ----LITERALS----
-Literal;
+Literal ::= Literal_Integer
+            | Literal_dictionary
+            | Literal_sequence
+            | Literal_string
+            ;
 
 // primitive literals
-Literal_Integer;
+Literal_Integer ::= LIT_POS_INT
+                  | LIT_NEG_INT
+                  ;
 
 // aggregate literals
-Literal_dictionary;
-Literal_sequence;
-Literal_string;
+
+Dictionary_entry ::= Expression COLON Expression;
+
+Dictionary_entry_list ::= Dictionary_Entry COMMA Dictionary_List
+                    | Dictionary_Entry
+                    ;
+Literal_dictionary ::= CURLY_L Dictionary_List CURLY_R SEMICOLON
+                      | CURLY_L CURLY_R SEMICOLON
+                      ;
+
+Sequence_entry ::= Expression;
+
+Sequence_entry_list ::= Sequence_entry COMMA Sequence_entry_list
+                    | Sequence_entry
+                    ;
+
+Literal_sequence ::= BRACKET_SL Sequence_entry_list BRACKET_SR SEMICOLON
+                    | BRACKET_SL BRACKET_SR SEMICOLON;
+
+Literal_string ::= LIT_STRING ;
 
 // numerical literals
 Literal_rational ::= LIT_RAT
@@ -399,7 +425,8 @@ Literal_float    ::= LIT_FLOAT
 Type ::= Type_primitive
        | Type_aggregate
        | Type_defined
-       | TOP;
+       | TOP
+       ;
 
 // Type grouping
 Type_primitive ::= Type_number
@@ -459,7 +486,10 @@ Operator_binary_numeric ::= PLUS
                             | DIVIDE
                             | POWER
                             ;
-Operator_binary_sequence;
+Operator_binary_sequence ::= IN
+                            | CONCAT
+
+Operator_binary_dictionary ::= IN
 
 // unary
 Operator_unary_boolean ::= NOT;
