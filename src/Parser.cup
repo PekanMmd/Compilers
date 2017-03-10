@@ -213,10 +213,7 @@ start with Z_Program;
 // ----˜Z PROGRAM----
 Z_Program ::= Declaration_main
             | Declaration Z_Program
-            | Declaration_main Declaration
-            | Declaration_main Declaration Declaration
-            | Declaration_main Declaration Declaration Declaration
-            | Declaration_main Declaration Declaration Declaration Declaration
+            | Declaration_main Declaration_list
             ;
        
 // ----DECLARATIONS----
@@ -229,7 +226,9 @@ Declaration ::= Declaration_function
 Declaration_variable ::= ID COLON Type Declaration_variable_assignment SEMICOLON;
 Declaration_variable_assignment ::= ASSIGNMENT Expression_list | ;
 
-Declaration_list ::= Declaration Declaration_list;
+Declaration_list ::= Declaration_list Declaration
+                   | Declaration
+                   ;
 
 
 // functions
@@ -262,6 +261,7 @@ Function_body ::= Declaration_variable Function_body
 Main_body ::= Declaration_variable Main_body
             | Declaration_type Main_body
             | Declaration_type_alias Main_body
+            | Declaration_function Main_body
             | Statement_list
             ;
 
@@ -284,17 +284,11 @@ Statement_control_flow ::= Statement_if
                          | Statement_loop
                          ;
 
-Statement_if ::= IF BRACKET_L Expression BRACKET_R THEN Statement_list FI
-               | IF BRACKET_L Expression BRACKET_R THEN FI
-               ;
+Statement_if ::= IF BRACKET_L Expression BRACKET_R THEN Statement_list FI;
                                       
-Statement_if_else ::= IF BRACKET_L Expression BRACKET_R THEN Statement_list ELSE Statement_list FI
-                    | IF BRACKET_L Expression BRACKET_R THEN ELSE Statement_list FI
-                    ;
+Statement_if_else ::= IF BRACKET_L Expression BRACKET_R THEN Statement_list ELSE Statement_list FI;
 
-Statement_loop ::= LOOP Statement_list POOL
-                 | LOOP POOL
-                 ;
+Statement_loop ::= LOOP Statement_list POOL;
 
 // actions
 Statement_break ::= BREAK SEMICOLON

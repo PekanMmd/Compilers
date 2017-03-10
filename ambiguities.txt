@@ -20,6 +20,20 @@ Paragraph : 14
 Problem   : It is not specified whether or not a function may have local variable declarations without any statements or to be completely empty.
 Solution  : An empty function serves no purpose so it will not be allowed.
 
+Paragraph : 18
+Problem   : It is not clear whether the keyword NOP can be used explicitly as a function statement.
+Solution  : To create what would effectively be an empty if-else statement (to circumvent the solution to paragraph 19’s ambiguity) one could simple use NOP as the statement body. Since it has a potentially useful niche role we will allow it.
+
+Paragraph : 19
+Problem   : It is not stated whether or not the sub statements in if statements and loops may be empty.
+Solution  : One of the test cases does not allow an empty else clause and so we will not allow empty if-then clauses or loops.
+
 Paragraph : 20
 Problem   : It is not specified whether or not main functions may include function definitions.
-Solution  : Functions may as well be specified outside of main so we will not allow it.
+Solution  : This could serve to limit the scope of certain functions and so has a niche usage. We will allow this.
+
+Paragraph : 20
+Problem   : It is not specified whether or not functions may include function/type definitions or aliases.
+Solution  : These might as well be global so we will not allow it.
+
+
