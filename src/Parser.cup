@@ -329,6 +329,9 @@ Expression_boolean ::= Expression Operator_binary_boolean Expression
 
 Expression_numeric ::= Expression Operator_binary_numeric Expression
                      | Expression_sequence_length
+                     | MINUS LIT_POS_INT
+                     | MINUS LIT_RAT
+                     | MINUS LIT_FLOAT
                      ;
 
 Expression_sequence ::= Expression_sequence_slice
@@ -458,6 +461,7 @@ Operator_binary_numeric ::= PLUS
 
 // unary
 Operator_unary_boolean ::= NOT;
+
 
 
 
