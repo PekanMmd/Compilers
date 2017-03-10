@@ -28,6 +28,10 @@ public void syntax_error(Symbol current_token) { report_error(
 %line
 %column
 
+%eofval{
+    return createSymbol(sym.EOF);
+%eofval}
+
 /* -----------------------------------------------------------------------------------------
  * States
  * -----------------------------------------------------------------------------------------
@@ -60,28 +64,37 @@ Comma              = ","
 QuestionMark       = "?"
 
 // Literals
-LiteralNull		   = "null"
+LiteralNull		   = {KeywordNull}
 
 // Key words
-
 KeywordDict				= "dict"
 KeywordSeq				= "seq"
+//KeywordType 			= {DataTypePrimitive} | {DataTypeAggregate} | {DataTypeTop}
 
 KeywordAlias			= "alias"
 KeywordTdef				= "tdef"
 KeywordFdef				= "fdef"
-
 KeywordMain				= "main"
+//KeywordDeclarations		= {KeywordAlias} | {KeywordTdef} | {KeywordFdef} | {KeywordMain}
+
 KeywordIf				= "if"
 KeywordIfTerminator		= "fi"
 KeywordThen				= "then"
 KeywordElse				= "else"
 KeywordLoop				= "loop"
 KeywordLoopTerminator	= "pool"
+//KeywordControlFlow		= {KeywordIf} | {KeywordIfTerminator} | {KeywordThen} | {KeywordElse} | {KeywordLoop} | {KeywordLoopTerminator}
+
 KeywordReturn			= "return"
 KeywordRead				= "read"
 KeywordPrint 			= "print"
 KeywordBreak			= "break"
+//KeywordStatements		= {KeywordReturn} | {KeywordRead} | {KeywordPrint} | {KeywordBreak}
+
+KeywordNull 			= "null"
+//KeywordValue			= {KeywordNull}
+
+//Keyword 				= {KeywordType} | {KeywordDeclarations} | {KeywordControlFlow} | {KeywordStatements} | {KeywordValue}
 
 //Paragraph 3 -----------------------------------------------
 // ----------------------------------------------------------
@@ -89,10 +102,6 @@ CommentSingleLineBegin 	= "#"
 CommentSingleLineEnd	= "\n"
 CommentMultilineBegin  	= "/#" 
 CommentMultiLineEnd		= "#/"
-
-//Paragraph 4 -----------------------------------------------
-// ----------------------------------------------------------
-Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*) (!{Keyword})
 
 //Paragraph 5 -----------------------------------------------
 // ----------------------------------------------------------
@@ -110,7 +119,8 @@ DataTypeBool  = "bool"
 DataTypeInt   = "int"
 DataTypeRat   = "rat"
 DataTypeFloat = "float"
-DataTypePrimitive = DataTypeFloat | DataTypeRat | DataTypeInt | DataTypeBool | DataTypeChar
+//DataTypePrimitive = DataTypeFloat | DataTypeRat | DataTypeInt | DataTypeBool | DataTypeChar
+//DataTypeAggregate = DataTypeSequence | DataTypeDictionary | DataTypeString
 
 LiteralPosInt   =  0 | [1-9][0-9]*
 LiteralInt      =  0 | -?[1-9][0-9]*
@@ -119,14 +129,14 @@ LiteralFloat    = {LiteralInt} . {LiteralPosInt}
 
 //Paragraph 8 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeDictionary 		= dict<{DataTypePrimitive}, {DataTypePrimitive}>
+//DataTypeDictionary 		= {KeywordDict}
 
 DataTypeTop       		= "top"
 
 
 //Paragraph 9 -----------------------------------------------
 // ----------------------------------------------------------
-DataTypeSequence 	= {KeywordSeq} < {DataType} >
+//DataTypeSequence 	= {KeywordSeq}
 
 //Paragraph 10 ----------------------------------------------
 // ----------------------------------------------------------
@@ -159,7 +169,7 @@ OperatorIn 	= "in"
 OperatorSequenceConcatenation	= "::"
 
 // comparison operators
-OperatorLessThan				= "<"
+//OperatorLessThan				= "<" // conflicts with left angle bracket
 OperatorLessThanOrEqual		    = "<="
 OperatorEquality				= "="
 OperatorNotEqual				= "!="
@@ -170,8 +180,9 @@ OperatorNotEqual				= "!="
 // ----------------------------------------------------------
 OperatorAssignment		= ":="
 
-
-
+//Paragraph 4 -----------------------------------------------
+// ----------------------------------------------------------
+Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*)
 
 %%
 /* -----------------------------------------------------------------------------------------
@@ -184,30 +195,24 @@ OperatorAssignment		= ":="
 {CommentSingleLineBegin} { yybegin(STATE_COMMENT_SINGLE); }
 {CommentMultilineBegin } { yybegin(STATE_COMMENT_MULTI ); }
 
-<STATE_COMMENT_SINGLE> { CommentSingleLineEnd} { yybegin(YYINITIAL); }
-<STATE_COMMENT_SINGLE> . {}
+<STATE_COMMENT_SINGLE> {
+		{CommentSingleLineEnd} 	{ yybegin(YYINITIAL); }
+	 	. 						{ /* ignored       */ }
+}
 
-<STATE_COMMENT_MULTI>  { CommentMultiLineEnd} { yybegin(YYINITIAL); }
-<STATE_COMMENT_MULTI>  . {}
+<STATE_COMMENT_MULTI> {
 
-
-// Initial State
-<YYINITIAL> {KeywordTdef } { return createSymbol(sym.TDEF ); }
-<YYINITIAL> {KeywordFdef } { return createSymbol(sym.FDEF ); }
-<YYINITIAL> {KeywordAlias} { return createSymbol(sym.ALIAS); }
-<YYINITIAL> {KeywordMain } { return createSymbol(sym.MAIN ); }
-
-
+		{ CommentMultiLineEnd } { yybegin(YYINITIAL); }
+		. 						{ /* ignored       */ }
+}
 
 /* 	-------------
- *	Tokens
+ *	Terminals
  *	-------------
  */
 
-
  // ----OTHER----
-{Identifier} 				{ return createSymbol(sym.ID, yytext());	}
-{SequenceLengthParameter} 	{ return createSymbol(sym.LEN);	}
+	{SequenceLengthParameter} 	{ return createSymbol(sym.LEN);	}
 
 
 
@@ -300,11 +305,11 @@ OperatorAssignment		= ":="
       
 
     //  Numeric Operators
-    {OperatorPlus} 			{ return createSymbol(sym.PLUS); 					}
-	{OperatorMinus} 		{ return createSymbol(sym.MINUS); 					}
-	{OperatorMultiplication}{ return createSymbol(sym.MULTIPLY); 				}
-	{OperatorDivision} 		{ return createSymbol(sym.DIVIDE); 					}
-	{OperatorPower} 		{ return createSymbol(sym.POWER); 					}
+    {OperatorPlus} 				{ return createSymbol(sym.PLUS); 					}
+	{OperatorMinus} 			{ return createSymbol(sym.MINUS); 					}
+	{OperatorMultiplication}	{ return createSymbol(sym.MULTIPLY); 				}
+	{OperatorDivision} 			{ return createSymbol(sym.DIVIDE); 					}
+	{OperatorPower} 			{ return createSymbol(sym.POWER); 					}
 	
 
 
@@ -314,7 +319,7 @@ OperatorAssignment		= ":="
 	{OperatorSequenceConcatenation} { return createSymbol(sym.CONCAT); 			}
 
     //  Comparison Operators
-    {OperatorLessThan} 		{ return createSymbol(sym.LESS_THAN); 				}
+   // {OperatorLessThan} 		{ return createSymbol(sym.LESS_THAN); 				} // Overlaps with left angle bracket
 	{OperatorLessThanOrEqual} { return createSymbol(sym.LESS_OR_EQ); 			}
 	{OperatorEquality} 		{ return createSymbol(sym.EQUAL); 					}
 	{OperatorNotEqual} 		{ return createSymbol(sym.NOT_EQUAL);				}
@@ -322,16 +327,21 @@ OperatorAssignment		= ":="
     //  Other
     {OperatorAssignment} 	{ return createSymbol(sym.ASSIGNMENT); 				}
 
+    // ----IDENTIFIER----
+    // put at end because can overlap with other matches
+    {Identifier} 				{ return createSymbol(sym.ID, yytext());	}
 
-// End of File
-<YYINITIAL,STATE_COMMENT_SINGLE> <<EOF>> {return createSymbol(sym.EOF);}
 
+/*// End of File
+<YYINITIAL,STATE_COMMENT_SINGLE> <<EOF>> {return createSymbol(sym.E_O_F)  ;}
+<STATE_COMMENT_MULTI> 			 <<EOF>> {return createSymbol(sym.ERROR);}
+*/
 
 /* -----------------------------------------------------------------------------------------
  * Unmatched input
  * -----------------------------------------------------------------------------------------
  */
-. | <<EOF>> {
+. {
 	syntax_error(sym.ERROR);
   }
 
