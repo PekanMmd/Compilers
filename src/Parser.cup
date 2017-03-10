@@ -118,10 +118,7 @@ terminal ERROR, ID, LEN;
 
 
 // ----FUNCTION DECLARATIONS----
-  non terminal        Function_body, Main_body;
-
-  // legal declarations
-  non terminal        Legal_declaration_function, Legal_declaration_list_function, Legal_declaration_main, Legal_declaration_list_main;
+  non terminal        Function_body;
 
 
 
@@ -144,11 +141,10 @@ terminal ERROR, ID, LEN;
   non terminal        Expression, Expression_list;
 
   // operators
-  non terminal        Expression_boolean, Expression_comparison, Expression_numeric, Expression_sequence;
+  non terminal        Expression_boolean, Expression_numeric, Expression_sequence;
 
   // types
-  non terminal        Expression_dictionary, Expression_int, Expression_rat, Expression_float, Expression_string, Expression_defined, Expression_unknown;
-  non terminal        Expression_pos_int_unknown, Expression_variable;
+  non terminal        Expression_unknown;
 
   // functions and fields
   non terminal        Expression_function_predicate, Expression_function_call, Expression_conditioned_function_call, Expression_field_reference, Expression_sequence_length;
@@ -164,36 +160,26 @@ terminal ERROR, ID, LEN;
   non terminal        Literal;
 
   // primitive literals
-  non terminal        Literal_Integer, Literal_inbuilt;
+  non terminal        Literal_Integer;
 
   // aggregate literals
-  non terminal        Literal_dictionary, Dictionary_entry, Dictionary_entry_list, Literal_sequence, Sequence_entry, Sequence_entry_list, Literal_string, Literal_defined;
-
-  // automatically converted numerical literals 
-  non terminal        Literal_rational, Literal_float;
-
+  non terminal        Literal_dictionary, Dictionary_entry, Dictionary_entry_list, Literal_sequence;
 
 
 // ----TYPES----
   non terminal        Type; 
 
   // Type grouping
-  non terminal        Type_primitive, Type_number, Type_aggregate, Type_defined; // defined type includes aliases
+  non terminal        Type_primitive, Type_number, Type_aggregate; // defined type includes aliases
 
   // aggregate types
-  non terminal        Type_dictionary, Type_sequence, Type_string;
-
-  // legal types
-  non terminal        Type_legal_dictionary_key, Type_legal_dictionary_value, Type_legal_sequence_value;
-
+  non terminal        Type_dictionary, Type_sequence;
 
 
 // ----OPERATORS----
 
-  non terminal        Operator;
-
   // binary
-  non terminal        Operator_binary_boolean, Operator_binary_comparison, Operator_binary_numeric, Operator_binary_sequence, Operator_binary_dictionary;
+  non terminal        Operator_binary_boolean, Operator_binary_comparison, Operator_binary_numeric;
 
   // unary
   non terminal        Operator_unary_boolean;
