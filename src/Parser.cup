@@ -118,7 +118,7 @@ terminal ERROR, ID, LEN;
 
 
 // ----FUNCTION DECLARATIONS----
-  non terminal        Function_body;
+  non terminal        Function_body, Main_body;
 
 
 
@@ -239,7 +239,7 @@ Declaration_function ::= FDEF ID BRACKET_L Parameter_list BRACKET_R CURLY_L Func
                        | FDEF ID BRACKET_L BRACKET_R CURLY_L Function_body CURLY_R COLON Type SEMICOLON
                        ;
 
-Declaration_main ::= MAIN CURLY_L Function_body CURLY_R SEMICOLON;
+Declaration_main ::= MAIN CURLY_L Main_body CURLY_R SEMICOLON;
 
 // types
 Declaration_type ::= TDEF ID CURLY_L Parameter_list CURLY_R SEMICOLON;
@@ -259,6 +259,11 @@ Function_body ::= Declaration_variable Function_body
                 | Statement_list
                 ;
 
+Main_body ::= Declaration_variable Main_body
+            | Declaration_type Main_body
+            | Declaration_type_alias Main_body
+            | Statement_list
+            ;
 
 // ----STATEMENTS----
 Statement ::= Statement_control_flow
