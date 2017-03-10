@@ -1,0 +1,76 @@
+
+tests/open/n-c-style-if.s
+Syntax error at line 2, column 15Couldn't repair and continue parse at character 1 of input
+tests/open/n-decl-after-statements.s
+Syntax error at line 30, column 3Couldn't repair and continue parse at character 29 of input
+tests/open/n-empty-else.s
+Syntax error at line 19, column 9Couldn't repair and continue parse at character 18 of input
+tests/open/n-empty-main.s
+Syntax error at line 7, column 2Couldn't repair and continue parse at character 6 of input
+tests/open/n-func-para-type-error0.s
+Syntax error at line 1, column 16Couldn't repair and continue parse at character 0 of input
+tests/open/n-func-return-type.s
+Syntax error at line 6, column 24Couldn't repair and continue parse at character 5 of input
+tests/open/n-main-missing-brace.s
+Syntax error at line 2, column 2Couldn't repair and continue parse at character 1 of input
+tests/open/n-main-return.s
+Syntax error at line 7, column 2Couldn't repair and continue parse at character 6 of input
+tests/open/n-multiple-assignment.s
+Syntax error at line 5, column 9Couldn't repair and continue parse at character 4 of input
+tests/open/n-nested-type-def0.s
+Syntax error at line 2, column 18Couldn't repair and continue parse at character 1 of input
+tests/open/n-no-main.s
+Syntax error at line 1, column 16Couldn't repair and continue parse at character 0 of input
+tests/open/n-stray-return.s
+Syntax error at line 5, column 0Couldn't repair and continue parse at character 4 of input
+tests/open/n-two-else.s
+Syntax error at line 26, column 4Couldn't repair and continue parse at character 25 of input
+tests/open/p-adt.s
+parsing successful
+
+tests/open/p-alice.s
+parsing successful
+
+tests/open/p-empty-dict.s
+parsing successful
+
+tests/open/p-empty-seq.s
+parsing successful
+
+tests/open/p-fib.s
+Syntax error at line 13, column 24Couldn't repair and continue parse at character 12 of input
+tests/open/p-fp0.s
+parsing successful
+
+tests/open/p-function0.s
+Syntax error at line 8, column 22Couldn't repair and continue parse at character 7 of input
+tests/open/p-if-then-else0.s
+Syntax error at line 7, column 27Couldn't repair and continue parse at character 6 of input
+tests/open/p-if-then-else1.s
+Syntax error at line 14, column 18Couldn't repair and continue parse at character 13 of input
+tests/open/p-imply.s
+parsing successful
+
+tests/open/p-main0.s
+parsing successful
+
+tests/open/p-nested-loops.s
+parsing successful
+
+tests/open/p-rat0.s
+parsing successful
+
+tests/open/p-return0.s
+parsing successful
+
+tests/open/p-return1.s
+parsing successful
+
+tests/open/p-reverse.s
+parsing successful
+
+tests/open/p-sequences.s
+parsing successful
+
+tests/open/p-tdef0.s
+Syntax error at line 2, column 17Couldn't repair and continue parse at character 1 of input

@@ -5,18 +5,7 @@
  * -----------------------------------------------------------------------------------------
  */
 import java_cup.runtime.*;
-import java.util.*
-
-private Symbol createSymbol(int type) {
-	return new Symbol(type, yyline, yycolumn);
-}
-private Symbol createSymbol(int type, Object value) {
-	return new Symbol(type, yyline, yycolumn, value);
-}
-
-public void syntax_error(Symbol current_token) { report_error(
-     "Syntax error at line " + (current_token.left+1) + ", column " + current_token.right, null );
-}
+import java.util.*;
 
 %%
 /* -----------------------------------------------------------------------------------------
@@ -27,6 +16,20 @@ public void syntax_error(Symbol current_token) { report_error(
 %cup
 %line
 %column
+
+%{
+	private Symbol createSymbol(int type) {
+		return new Symbol(type, yyline, yycolumn);
+	}
+
+	private Symbol createSymbol(int type, Object value) {
+		return new Symbol(type, yyline, yycolumn, value);
+	}
+
+	public void syntax_error(Symbol current_token) { 
+		System.out.println("Syntax error at line " + (current_token.left+1) + ", column " + current_token.right);
+  }
+%}
 
 %eofval{
     return createSymbol(sym.EOF);
@@ -69,13 +72,11 @@ LiteralNull		   = {KeywordNull}
 // Key words
 KeywordDict				= "dict"
 KeywordSeq				= "seq"
-//KeywordType 			= {DataTypePrimitive} | {DataTypeAggregate} | {DataTypeTop}
 
 KeywordAlias			= "alias"
 KeywordTdef				= "tdef"
 KeywordFdef				= "fdef"
 KeywordMain				= "main"
-//KeywordDeclarations		= {KeywordAlias} | {KeywordTdef} | {KeywordFdef} | {KeywordMain}
 
 KeywordIf				= "if"
 KeywordIfTerminator		= "fi"
@@ -83,18 +84,13 @@ KeywordThen				= "then"
 KeywordElse				= "else"
 KeywordLoop				= "loop"
 KeywordLoopTerminator	= "pool"
-//KeywordControlFlow		= {KeywordIf} | {KeywordIfTerminator} | {KeywordThen} | {KeywordElse} | {KeywordLoop} | {KeywordLoopTerminator}
 
 KeywordReturn			= "return"
 KeywordRead				= "read"
 KeywordPrint 			= "print"
 KeywordBreak			= "break"
-//KeywordStatements		= {KeywordReturn} | {KeywordRead} | {KeywordPrint} | {KeywordBreak}
 
 KeywordNull 			= "null"
-//KeywordValue			= {KeywordNull}
-
-//Keyword 				= {KeywordType} | {KeywordDeclarations} | {KeywordControlFlow} | {KeywordStatements} | {KeywordValue}
 
 //Paragraph 3 -----------------------------------------------
 // ----------------------------------------------------------
@@ -119,10 +115,9 @@ DataTypeBool  = "bool"
 DataTypeInt   = "int"
 DataTypeRat   = "rat"
 DataTypeFloat = "float"
-//DataTypePrimitive = DataTypeFloat | DataTypeRat | DataTypeInt | DataTypeBool | DataTypeChar
-//DataTypeAggregate = DataTypeSequence | DataTypeDictionary | DataTypeString
 
 LiteralPosInt   =  0 | [1-9][0-9]*
+LiteralNegInt	=  -[1-9][0-9]*
 LiteralInt      =  0 | -?[1-9][0-9]*
 LiteralRational = ({LiteralInt} "/" {LiteralPosInt}) | ({LiteralInt} _ {LiteralPosInt} "/" {LiteralPosInt})
 LiteralFloat    = {LiteralInt} . {LiteralPosInt}
@@ -282,7 +277,7 @@ Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*)
     //  Primitive
     {LiteralPosInt} 		{ return createSymbol(sym.LIT_POS_INT, yytext()); 	}
     {LiteralNegInt}			{ return createSymbol(sym.LIT_NEG_INT, yytext()); 	}
-	{ValueBool} 			{ return createSymbol(sym.VAL_BOOL, yytext()); 		}
+	{ValueBool} 			{ return createSymbol(sym.LIT_BOOL, yytext()); 		}
 	{LiteralRational} 		{ return createSymbol(sym.LIT_RAT, yytext()); 		}
 	{LiteralFloat} 			{ return createSymbol(sym.LIT_FLOAT, yytext()); 	}
 	{LiteralChar} 			{ return createSymbol(sym.LIT_CHAR, yytext()); 		}
@@ -342,7 +337,7 @@ Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*)
  * -----------------------------------------------------------------------------------------
  */
 . {
-	syntax_error(sym.ERROR);
+	syntax_error(createSymbol(sym.ERROR));
   }
 
 

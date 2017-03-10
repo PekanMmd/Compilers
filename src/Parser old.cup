@@ -12,7 +12,6 @@ parser code {:
 
   public void syntax_error(Symbol current_token) { report_error(
      "Syntax error at line " + (current_token.left+1) + ", column " + current_token.right, null );
-      syntaxErrors = true;
   }
 :}
 
@@ -110,7 +109,7 @@ terminal ERROR, ID, LEN;
   non terminal        Declaration_type, Declaration_type_alias;
 
   // parameters
-  non terminal        Parameter, Parameter_list;
+  non terminal        Parameter_function, Parameter_list_function, Parameter_type, Parameter_list_type;
 
   // variables
   non terminal        Declaration_variable, Declaration_variable_assignment;
@@ -154,7 +153,7 @@ terminal ERROR, ID, LEN;
   non terminal        Expression_function_predicate, Expression_function_call, Expression_conditioned_function_call, Expression_field_reference, Expression_sequence_length;
 
   // aggregate type value reference
-  non terminal        Expression_dictionary_sequence_index; 
+  non terminal        Expression_dictionary_key, Expression_sequence_index; 
 
   // sequence slice
   non terminal        Expression_sequence_slice, Expression_sequence_left_slice, Expression_sequence_right_slice, Expression_sequence_dual_slice, Expression_sequence_empty_slice;
@@ -210,10 +209,8 @@ precedence left       PLUS, MINUS, OR, IMPLIES;
 precedence left       DIVIDE, MULTIPLY, AND;
 precedence left       POWER;
 precedence left       DOT, CONCAT, IN;
-precedence left       BRACKET_SL, BRACKET_SR;
 precedence right      NOT;
 precedence left       BRACKET_L, BRACKET_R;
-precedence left       SEMICOLON;
 
 
 /* -----------------------------------------------------------------------------------------
@@ -225,11 +222,9 @@ start with Z_Program;
 
 // ----˜Z PROGRAM----
 Z_Program ::= Declaration_main
-            | Declaration Z_Program
-            | Declaration_main Declaration
-            | Declaration_main Declaration Declaration
-            | Declaration_main Declaration Declaration Declaration
-            | Declaration_main Declaration Declaration Declaration Declaration
+            | Declaration_main Declaration_list
+            | Declaration_list Declaration_main
+            | Declaration_list Declaration_main Declaration_list
             ;
        
 // ----DECLARATIONS----
@@ -237,41 +232,73 @@ Declaration ::= Declaration_function
               | Declaration_type
               | Declaration_type_alias
               | Declaration_variable
+              | Declaration_variable_assignment
               ;
 
-Declaration_variable ::= ID COLON Type Declaration_variable_assignment SEMICOLON;
-Declaration_variable_assignment ::= ASSIGNMENT Expression_list | ;
-
-Declaration_list ::= Declaration Declaration_list;
+Declaration_list ::= Declaration Declaration_list
+                   | Declaration
+                   ;
 
 
 // functions
-Declaration_function ::= FDEF ID BRACKET_L Parameter_list BRACKET_R CURLY_L Function_body CURLY_R SEMICOLON 
-                       | FDEF ID BRACKET_L Parameter_list BRACKET_R CURLY_L Function_body CURLY_R COLON Type SEMICOLON
-                       | FDEF ID BRACKET_L BRACKET_R CURLY_L Function_body CURLY_R SEMICOLON 
-                       | FDEF ID BRACKET_L BRACKET_R CURLY_L Function_body CURLY_R COLON Type SEMICOLON
+Declaration_function ::= FDEF ID BRACKET_L Parameter_list_function BRACKET_R CURLY_L Function_body CURLY_R SEMICOLON 
+                       | FDEF ID BRACKET_L Parameter_list_function BRACKET_R CURLY_L Function_body CURLY_R COLON Type SEMICOLON
+                       | FDEF ID BRACKET_L Parameter_list_function BRACKET_R CURLY_L CURLY_R SEMICOLON // allow empty function if it has no return type
                        ;
 
-Declaration_main ::= MAIN CURLY_L Function_body CURLY_R SEMICOLON;
+Declaration_main ::= MAIN CURLY_L Main_body CURLY_R SEMICOLON;
 
 // types
-Declaration_type ::= TDEF ID CURLY_L Parameter_list CURLY_R SEMICOLON;
+Declaration_type ::= TDEF ID CURLY_L Parameter_list_type CURLY_R SEMICOLON;
 
 Declaration_type_alias ::= ALIAS Type ID SEMICOLON;
 
 // parameters
-Parameter ::= ID COLON Type;
+Parameter_function ::= ID COLON Type;
 
-Parameter_list ::= Parameter COMMA Parameter_list
-                 | Parameter;
+Parameter_list_function ::= Parameter_function COMMA Parameter_list_function
+                          | Parameter_function;
 
+Parameter_type ::= ID COLON Type;
+
+Parameter_list_type ::= Parameter_type COMMA Parameter_list_type 
+                      | Parameter_type
+                      ;
+// variables
+Declaration_variable ::= ID COLON Type ASSIGNMENT Expression SEMICOLON
+               //        | ID COLON Type SEMICOLON
+                       ;
+
+/*Declaration_variable_assignment ::= ID COLON Type ASSIGNMENT Expression SEMICOLON;*/
 
 
 // ----FUNCTION DECLARATIONS----
-Function_body ::= Declaration Function_body
+Function_body ::= Legal_declaration_list_function Statement_list
+                | Legal_declaration_list_function
                 | Statement_list
                 ;
 
+/*Main_body ::= Legal_declaration_list_main Statement_list
+            | Legal_declaration_list_main
+            | Statement_list
+            ;*/
+
+// legal declarations
+/*Legal_declaration_function ::= Declaration_variable
+                             | Declaration_variable_assignment
+                             ;*/
+
+Legal_declaration_list_function ::= Declaration_variable Legal_declaration_list_function
+                               //   | Declaration_variable Declaration_variable
+                                  ;
+
+/*Legal_declaration_main ::= Declaration_variable
+                         | Declaration_variable_assignment
+                         ;*/
+
+/*Legal_declaration_list_main ::= Declaration_variable Legal_declaration_list_main
+                              | Declaration_variable Declaration_variable
+                              ;*/
 
 // ----STATEMENTS----
 Statement ::= Statement_control_flow
@@ -285,32 +312,28 @@ Statement ::= Statement_control_flow
 Statement_list ::= Statement Statement_list
                  | Statement
                  ;
-
 // control flow
 Statement_control_flow ::= Statement_if
                          | Statement_if_else
                          | Statement_loop
                          ;
 
-Statement_if ::= IF BRACKET_L Expression BRACKET_R THEN Statement_list FI;
+Statement_if ::= IF BRACKET_L Expression BRACKET_R THEN Function_body FI;
                                       
-Statement_if_else ::= IF BRACKET_L Expression BRACKET_R THEN Statement_list ELSE Statement_list FI;
+Statement_if_else ::= IF BRACKET_L Expression BRACKET_R THEN Function_body ELSE Function_body FI;
 
-Statement_loop ::= LOOP Statement_list POOL;
+Statement_loop ::= LOOP Function_body POOL;
 
 // actions
 Statement_break ::= BREAK SEMICOLON
-                  | BREAK LIT_POS_INT SEMICOLON
+                  | BREAK Expression_pos_int_unknown SEMICOLON
                   ;
 
-Statement_return ::= RETURN Expression SEMICOLON
-                   | RETURN SEMICOLON;
+Statement_return ::= RETURN Expression SEMICOLON;
 
-Statement_assignment ::= ID ASSIGNMENT Expression SEMICOLON
-                       | Expression ASSIGNMENT Expression SEMICOLON
-                       ;
+Statement_assignment ::= ID ASSIGNMENT Expression SEMICOLON;
 
-Statement_conditioned_function_call ::= Expression_conditioned_function_call SEMICOLON;
+Statement_conditioned_function_call ::= Expression_function_predicate Expression_function_call SEMICOLON;
 
 // input/output
 Statement_IO ::= Statement_input
@@ -325,50 +348,95 @@ Statement_output ::= PRINT Expression SEMICOLON;
 Expression ::= Expression_boolean 
              | Expression_numeric
              | Expression_sequence
-             | Expression_unknown
-             | Literal
+             | Expression_dictionary
+             | Expression_defined
              ;
 
-Expression_list ::= Expression COMMA Expression_list
-                  | Expression
-                  ;
-
 // operators
-Expression_boolean ::= Expression Operator_binary_boolean Expression
-                     | Operator_unary_boolean Expression
-                     | Expression IN Expression
-                     | Expression Operator_binary_comparison Expression
+Expression_boolean ::= LIT_BOOL
+                     | Expression_boolean Operator_binary_boolean Expression_boolean
+                     | NOT Expression_boolean
+                     | Expression IN Expression_sequence
+                     | Type_legal_dictionary_key IN Expression_dictionary
+                     | Expression_int Operator_binary_comparison Expression_int
+                     | Expression_rat Operator_binary_comparison Expression_rat
+                     | Expression_float Operator_binary_comparison Expression_float
+                     | Expression_boolean Operator_binary_comparison Expression_boolean
                      ;
 
-Expression_numeric ::= Expression Operator_binary_numeric Expression
-                     | Expression_sequence_length
-                     ;
+Expression_int ::= Literal_Integer 
+                 | Expression_int Operator_binary_numeric Expression_int
+                 | Expression_sequence_length
+                // | Expression_unknown
+                 ;
 
-Expression_sequence ::= Expression_sequence_slice
-                      | Expression CONCAT Expression
+Expression_rat ::= Literal_rational
+                 | Expression_rat Operator_binary_numeric Expression_rat
+                 | Expression_rat Operator_binary_numeric Expression_int
+                 | Expression_int Operator_binary_numeric Expression_rat
+                 //| Expression_unknown
+                 ;
+
+Expression_float ::= Literal_float
+                   | Expression_float Operator_binary_numeric Expression_float
+                   | Expression_float Operator_binary_numeric Expression_int
+                   | Expression_int Operator_binary_numeric Expression_float
+                // | Expression_unknown
+                   ;
+
+/*Expression_numeric ::= Expression_int
+                     | Expression_float
+                     | Expression_rat
+                     ;*/
+
+Expression_sequence ::= Literal_sequence
+                      | Expression_sequence_slice
+                      | Expression_sequence CONCAT Expression_sequence
+                    //  | Expression_unknown
                       ;
 
-Expression_unknown ::= ID
-                     | Expression_field_reference
-                     | Expression_conditioned_function_call
-                     | Expression_dictionary_sequence_index
+Expression_dictionary ::= Literal_dictionary
+                     //   | Expression_unknown
+                        ;
+
+/*Expression_string ::= Literal_string
+                   // | Expression_unknown
+                    ;*/
+
+Expression_defined ::= Literal_defined
+                     //| Expression_unknown
                      ;
 
+Expression_variable ::= ID;
+
+Expression_unknown ::= Expression_variable
+                     | Expression_field_reference
+                     | Expression_conditioned_function_call
+                     | Expression_dictionary_key
+                     | Expression_sequence_index
+                     ;
+
+Expression_pos_int_unknown ::= LIT_POS_INT
+                 | Expression_int Operator_binary_numeric Expression_int
+                 | Expression_sequence_length
+                 | Expression_unknown
+                 ;
+
 // functions and fields
-Expression_function_predicate ::= QUES_MARK Expression QUES_MARK;
+Expression_function_predicate ::= QUES_MARK Expression_boolean QUES_MARK;
 
 Expression_function_call ::= ID BRACKET_L Expression_list BRACKET_R;
 
 Expression_conditioned_function_call ::= Expression_function_predicate Expression_function_call;
 
-Expression_field_reference ::= Expression DOT ID;
-
-Expression_sequence_length ::= Expression DOT LEN;
+Expression_field_reference ::= Expression_defined DOT ID;
 
 Expression_sequence_length ::= Expression_sequence DOT LEN;
 
 // aggregate type value reference
-Expression_dictionary_sequence_index ::= Expression BRACKET_SL Expression BRACKET_SR;
+Expression_dictionary_key ::= Expression_dictionary BRACKET_SL Expression BRACKET_SR;
+
+Expression_sequence_index ::= Expression_sequence BRACKET_SL Expression_int BRACKET_SR;
 
 // sequence slice
 Expression_sequence_slice ::= Expression_sequence_left_slice
@@ -377,24 +445,23 @@ Expression_sequence_slice ::= Expression_sequence_left_slice
                             | Expression_sequence_empty_slice
                             ;
 
-
-Expression_sequence_left_slice  ::= Expression BRACKET_SL LIT_POS_INT COLON BRACKET_SR;
-Expression_sequence_right_slice ::= Expression BRACKET_SL COLON Expression BRACKET_SR;
-Expression_sequence_dual_slice  ::= Expression BRACKET_SL LIT_POS_INT COLON Expression BRACKET_SR;
-Expression_sequence_empty_slice ::= Expression BRACKET_SL COLON BRACKET_SR;
+Expression_sequence_left_slice  ::= Expression_sequence BRACKET_SL Expression_pos_int_unknown COLON BRACKET_SR;
+Expression_sequence_right_slice ::= Expression_sequence BRACKET_SL COLON Expression_int BRACKET_SR;
+Expression_sequence_dual_slice  ::= Expression_sequence BRACKET_SL Expression_pos_int_unknown COLON Expression_int BRACKET_SR;
+Expression_sequence_empty_slice ::= Expression_sequence BRACKET_SL COLON BRACKET_SR;
 
 
 
 // ----LITERALS----
-Literal ::= Literal_Integer
-          | LIT_RAT
-          | LIT_FLOAT
-          | LIT_BOOL
-          | LIT_CHAR
+/*Literal ::= Literal_inbuilt
+          | Literal_defined
+          ;*/
+
+/*Literal_inbuilt ::= Literal_Integer
           | Literal_dictionary
           | Literal_sequence
-          | NULL
-          ;
+          | Literal_string
+          ;*/
 
 // primitive literals
 Literal_Integer ::= LIT_POS_INT
@@ -402,6 +469,9 @@ Literal_Integer ::= LIT_POS_INT
                   ;
 
 // aggregate literals
+/*Literal_defined ::= Literal_inbuilt
+                  | Literal_inbuilt COMMA Literal_defined
+                  ;*/
 
 Dictionary_entry ::= Expression COLON Expression;
 
@@ -413,15 +483,30 @@ Literal_dictionary ::= CURLY_L Dictionary_entry_list CURLY_R
                      | CURLY_L CURLY_R
                      ;
 
-Literal_sequence ::= BRACKET_SL Expression_list BRACKET_SR
+Sequence_entry ::= Expression;
+
+Sequence_entry_list ::= Sequence_entry COMMA Sequence_entry_list
+                    | Sequence_entry
+                    ;
+
+Literal_sequence ::= BRACKET_SL Sequence_entry_list BRACKET_SR
                    | BRACKET_SL BRACKET_SR
                    | LIT_STRING
+                   ;
+
+// numerical literals
+Literal_rational ::= LIT_RAT
+                 //  | Literal_Integer
+                   ;
+
+Literal_float    ::= LIT_FLOAT
+                //   | Literal_Integer
                    ;
 
 // ----TYPES----
 Type ::= Type_primitive
        | Type_aggregate
-       | ID
+       | Type_defined
        | TOP
        ;
 
@@ -437,17 +522,37 @@ Type_number ::= TYPE_INT
               ;
 
 Type_aggregate ::= Type_sequence
-                 | TYPE_STR
+                 //| Type_string
                  | Type_dictionary
                  ;
 
+Type_defined ::= ID; 
+
 // aggregate types
-Type_dictionary ::= DICT ANGLE_L Type COMMA Type ANGLE_R;
+Type_dictionary ::= DICT ANGLE_L Type_legal_dictionary_key COMMA Type_legal_dictionary_value ANGLE_R;
 
-Type_sequence ::= SEQ ANGLE_L Type ANGLE_R;
+Type_sequence ::= SEQ ANGLE_L Type ANGLE_R
+                | TYPE_STR;
 
+// legal types
+Type_legal_dictionary_key ::= Type;
+
+//Type_legal_sequence_value ::= Type;
+
+Type_legal_dictionary_value ::= Type;
+
+/*Type_string ::= TYPE_STR
+              | SEQ ANGLE_L TYPE_CHAR ANGLE_R
+              ;*/
 
 // ----OPERATORS----
+/*Operator ::= Operator_binary_boolean
+           | Operator_binary_comparison
+           | Operator_binary_numeric
+           | Operator_binary_sequence
+          // | Operator_binary_dictionary
+           | Operator_unary_boolean
+           ;*/
 
 // binary
 Operator_binary_boolean ::= AND
@@ -461,7 +566,6 @@ Operator_binary_comparison ::= ANGLE_L // less than
                              | NOT_EQUAL
                              ;
 
-
 Operator_binary_numeric ::= PLUS
                           | MINUS
                           | MULTIPLY
@@ -469,8 +573,14 @@ Operator_binary_numeric ::= PLUS
                           | POWER
                           ;
 
+/*Operator_binary_sequence ::= IN
+                           | CONCAT
+                           ;*/
+
+//Operator_binary_dictionary ::= IN;
+
 // unary
-Operator_unary_boolean ::= NOT;
+//Operator_unary_boolean ::= NOT;
 
 
 
