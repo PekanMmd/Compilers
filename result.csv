@@ -38,16 +38,19 @@ tests/open/p-empty-seq.s
 parsing successful
 
 tests/open/p-fib.s
-Syntax error at line 13, column 24Couldn't repair and continue parse at character 12 of input
+parsing successful
+
 tests/open/p-fp0.s
 parsing successful
 
 tests/open/p-function0.s
 Syntax error at line 8, column 22Couldn't repair and continue parse at character 7 of input
 tests/open/p-if-then-else0.s
-Syntax error at line 7, column 27Couldn't repair and continue parse at character 6 of input
+parsing successful
+
 tests/open/p-if-then-else1.s
-Syntax error at line 14, column 18Couldn't repair and continue parse at character 13 of input
+parsing successful
+
 tests/open/p-imply.s
 parsing successful
 
