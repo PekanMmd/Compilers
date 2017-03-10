@@ -1,30 +1,30 @@
 
 tests/open/n-c-style-if.s
-Syntax error at line 2, column 15Couldn't repair and continue parse at character 1 of input
+Syntax error at line 2, column 15, token: 12 Couldn't repair and continue parse at character 1 of input
 tests/open/n-decl-after-statements.s
-Syntax error at line 30, column 3Couldn't repair and continue parse at character 29 of input
+Syntax error at line 30, column 3, token: 14 Couldn't repair and continue parse at character 29 of input
 tests/open/n-empty-else.s
-Syntax error at line 19, column 9Couldn't repair and continue parse at character 18 of input
+Syntax error at line 19, column 9, token: 23 Couldn't repair and continue parse at character 18 of input
 tests/open/n-empty-main.s
-Syntax error at line 7, column 2Couldn't repair and continue parse at character 6 of input
+Syntax error at line 7, column 2, token: 11 Couldn't repair and continue parse at character 6 of input
 tests/open/n-func-para-type-error0.s
-Syntax error at line 1, column 16Couldn't repair and continue parse at character 0 of input
+Syntax error at line 1, column 16, token: 33 Couldn't repair and continue parse at character 0 of input
 tests/open/n-func-return-type.s
-Syntax error at line 6, column 24Couldn't repair and continue parse at character 5 of input
+Syntax error at line 6, column 24, token: 14 Couldn't repair and continue parse at character 5 of input
 tests/open/n-main-missing-brace.s
-Syntax error at line 2, column 2Couldn't repair and continue parse at character 1 of input
+Syntax error at line 2, column 2, token: 28 Couldn't repair and continue parse at character 1 of input
 tests/open/n-main-return.s
-Syntax error at line 7, column 2Couldn't repair and continue parse at character 6 of input
+Syntax error at line 7, column 2, token: 14 Couldn't repair and continue parse at character 6 of input
 tests/open/n-multiple-assignment.s
-Syntax error at line 5, column 9Couldn't repair and continue parse at character 4 of input
+Syntax error at line 5, column 9, token: 63 Couldn't repair and continue parse at character 4 of input
 tests/open/n-nested-type-def0.s
-Syntax error at line 2, column 18Couldn't repair and continue parse at character 1 of input
+Syntax error at line 2, column 18, token: 13 Couldn't repair and continue parse at character 1 of input
 tests/open/n-no-main.s
-Syntax error at line 29, column 0Couldn't repair and continue parse at character 28 of input
+Syntax error at line 29, column 0, token: 0 Couldn't repair and continue parse at character 28 of input
 tests/open/n-stray-return.s
-Syntax error at line 5, column 0Couldn't repair and continue parse at character 4 of input
+Syntax error at line 5, column 0, token: 28 Couldn't repair and continue parse at character 4 of input
 tests/open/n-two-else.s
-Syntax error at line 26, column 4Couldn't repair and continue parse at character 25 of input
+Syntax error at line 26, column 4, token: 25 Couldn't repair and continue parse at character 25 of input
 tests/open/p-adt.s
 parsing successful
 
@@ -44,7 +44,8 @@ tests/open/p-fp0.s
 parsing successful
 
 tests/open/p-function0.s
-Syntax error at line 8, column 22Couldn't repair and continue parse at character 7 of input
+parsing successful
+
 tests/open/p-if-then-else0.s
 parsing successful
 
