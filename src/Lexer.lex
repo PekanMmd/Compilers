@@ -117,10 +117,8 @@ DataTypeRat   = "rat"
 DataTypeFloat = "float"
 
 LiteralPosInt   =  0 | [1-9][0-9]*
-LiteralNegInt	=  -[1-9][0-9]*
-LiteralInt      =  0 | -?[1-9][0-9]*
-LiteralRational = ({LiteralInt} "/" {LiteralPosInt}) | ({LiteralInt} _ {LiteralPosInt} "/" {LiteralPosInt})
-LiteralFloat    = {LiteralInt} . {LiteralPosInt}
+LiteralRational = ({LiteralPosInt} "/" {LiteralPosInt}) | ({LiteralPosInt} _ {LiteralPosInt} "/" {LiteralPosInt})
+LiteralFloat    = {LiteralPosInt} . {LiteralPosInt}
 
 //Paragraph 8 -----------------------------------------------
 // ----------------------------------------------------------
@@ -276,7 +274,6 @@ Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*)
 
     //  Primitive
     {LiteralPosInt} 		{ return createSymbol(sym.LIT_POS_INT, yytext()); 	}
-    {LiteralNegInt}			{ return createSymbol(sym.LIT_NEG_INT, yytext()); 	}
 	{ValueBool} 			{ return createSymbol(sym.LIT_BOOL, yytext()); 		}
 	{LiteralRational} 		{ return createSymbol(sym.LIT_RAT, yytext()); 		}
 	{LiteralFloat} 			{ return createSymbol(sym.LIT_FLOAT, yytext()); 	}
