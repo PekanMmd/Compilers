@@ -159,16 +159,20 @@ terminal ERROR, ID, LEN;
 // ----LITERALS----
   non terminal        Literal;
 
+  // primitive literals
+  non terminal        Literal_Integer;
+
   // aggregate literals
   non terminal        Literal_dictionary, Literal_sequence, Literal_string;
 
-
+  // automatically converted numerical literals 
+  non terminal        Literal_rational, Literal_float;
 
 // ----TYPES----
   non terminal        Type; 
 
   // Type grouping
-  non terminal        Type_primitive, Type_number, Type_aggregate, Type_defined, Type_int; // defined type includes aliases
+  non terminal        Type_primitive, Type_number, Type_aggregate, Type_defined; // defined type includes aliases
 
   // aggregate types
   non terminal        Type_dictionary, Type_sequence;
@@ -326,11 +330,27 @@ Expression_boolean ::= LIT_BOOL
                      | Expression_unknown
                      ;
 
-
-
 Expression_comparison;
+
+Expression_int ::= Literal_Integer;
+
+Expression_rat ::= Literal_rational
+                 | Expression_rat Operator_binary_numeric Expression_rat
+                 | Expression_rat Operator_binary_numeric Expression_int
+                 | Expression_int Operator_binary_numeric Expression_rat
+                 ;
+
+Expression_float ::= Literal_float
+                 | Expression_float Operator_binary_numeric Expression_float
+                 | Expression_float Operator_binary_numeric Expression_int
+                 | Expression_int Operator_binary_numeric Expression_float
+                 ;
+
 Expression_numeric;
+
 Expression_sequence;
+
+Expression_unknown;
 
 // functions and fields
 Expression_function_predicate;
@@ -354,12 +374,22 @@ Expression_sequence_empty_slice;
 // ----LITERALS----
 Literal;
 
+// primitive literals
+Literal_Integer;
+
 // aggregate literals
 Literal_dictionary;
 Literal_sequence;
 Literal_string;
 
+// numerical literals
+Literal_rational ::= LIT_RAT
+                   | LIT_INT
+                   ;
 
+Literal_float    ::= LIT_FLOAT
+                   | LIT_INT
+                   ;
 
 // ----TYPES----
 Type ::= Type_primitive
