@@ -24,7 +24,7 @@ scan with {: return lexer.next_token(); :};
  */
 
 // ----OTHER----
-terminal ERROR, ID, LEN;
+terminal ERROR, ID, DOT_LEN;
 
 
 // ----PUNCTUATION----
@@ -196,7 +196,7 @@ precedence nonassoc   ANGLE_L, LESS_OR_EQ, EQUAL, NOT_EQUAL;
 precedence left       PLUS, MINUS;
 precedence left       DIVIDE, MULTIPLY, AND;
 precedence left       POWER;
-precedence left       DOT, CONCAT, IN;
+precedence left       DOT, DOT_LEN, CONCAT, IN;
 precedence left       BRACKET_SL, BRACKET_SR;
 precedence left       NOT;
 precedence left       BRACKET_L, BRACKET_R;
@@ -359,9 +359,9 @@ Expression_conditioned_function_call ::= Expression_function_predicate Expressio
 
 Expression_field_reference ::= Expression DOT ID;
 
-Expression_sequence_length ::= Expression DOT LEN;
+Expression_sequence_length ::= Expression DOT_LEN;
 
-Expression_sequence_length ::= Expression_sequence DOT LEN;
+Expression_sequence_length ::= Expression_sequence DOT_LEN;
 
 // aggregate type value reference
 Expression_dictionary_sequence_index ::= Expression BRACKET_SL Expression BRACKET_SR;

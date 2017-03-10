@@ -136,7 +136,7 @@ DataTypeTop       		= "top"
 //Paragraph 10 ----------------------------------------------
 // ----------------------------------------------------------
 LiteralString			= "\"" {LegalCharacters}* "\""
-SequenceLengthParameter	= "len"
+SequenceLengthParameter	= ".len"
         
 
 // Table 2 --------------------------------------------------
@@ -206,7 +206,7 @@ Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*)
  */
 
  // ----OTHER----
-	{SequenceLengthParameter} 	{ return createSymbol(sym.LEN);	}
+	{SequenceLengthParameter} 	{ return createSymbol(sym.DOT_LEN);	}
 
 
 

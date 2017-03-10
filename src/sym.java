@@ -65,8 +65,8 @@ public class sym {
   public static final int ELSE = 25;
   public static final int READ = 30;
   public static final int THEN = 24;
+  public static final int DOT_LEN = 4;
   public static final int LIT_BOOL = 41;
-  public static final int LEN = 4;
   public static final int ALIAS = 18;
   public static final int TYPE_BOOL = 32;
   public static final int PRINT = 31;
@@ -75,7 +75,7 @@ public class sym {
   "error",
   "ERROR",
   "ID",
-  "LEN",
+  "DOT_LEN",
   "BRACKET_L",
   "BRACKET_R",
   "BRACKET_SL",
