@@ -204,14 +204,15 @@ terminal ERROR, ID, LEN;
  * -----------------------------------------------------------------------------------------
  */
 precedence left       ASSIGNMENT;
-precedence nonassoc   ANGLE_L, LESS_OR_EQ, EQUAL, NOT_EQUAL;
 precedence left       COLON;
-precedence left       PLUS, MINUS, OR, IMPLIES;
+precedence left       OR, IMPLIES;
+precedence nonassoc   ANGLE_L, LESS_OR_EQ, EQUAL, NOT_EQUAL;
+precedence left       PLUS, MINUS;
 precedence left       DIVIDE, MULTIPLY, AND;
 precedence left       POWER;
 precedence left       DOT, CONCAT, IN;
 precedence left       BRACKET_SL, BRACKET_SR;
-precedence right      NOT;
+precedence left       NOT;
 precedence left       BRACKET_L, BRACKET_R;
 precedence left       SEMICOLON;
 
