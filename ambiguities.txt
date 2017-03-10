@@ -2,7 +2,6 @@ Parser Specification Ambiguities
 
 Paragraph : 4
 Problem   : It is not specified whether keywords can be used as identifiers.
-<<<<<<< HEAD
 Solution  : It is uncommon for languages to allow such so we will not allow keywords as identifiers. 
 
 Paragraph : 7
@@ -16,10 +15,10 @@ Solution  : We will assume the underscore is in place for the use of mixed fract
 Paragraph : 9
 Problem   : It is not clear whether aggregate data types allow aggregate data types nested within them, other than the example given when declared as a top.
 Solution  : We will be allowing nested aggregate data types as most programming languages allow it.
-=======
-Solution  : It is uncommon for languages to allow such so we will not allow keywords as identifiers.
 
-Paragraph : 4
-Problem : It is not clear if it is allowed to start with a capital letter.
-Solution : We will allow the starting letter to be either a lowercase or uppercase letter.   
->>>>>>> c1b2a80845730422cf560c453c284597d6b97b80
+Paragraph : 14
+Problem   : It is not specified whether or not a function may have local variable declarations without any statements or to be completely empty.
+Solution  : Although it would be silly to do this in practice our parser will allow it. This will be the same for main.
+
+
+
