@@ -151,7 +151,7 @@ SequenceLengthParameter	= "len"
 // boolean operators
 
 OperatorNot		= "!"
-OperatorAnd		= "&&" //"&" "&" ??
+OperatorAnd		= "&&" 
 OperatorOr		= "||"
 OperatorImplies	= "=>"
 
@@ -271,7 +271,7 @@ Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*)
     //  Aggregate
     {KeywordDict}			{ return createSymbol(sym.DICT); 		}
 	{KeywordSeq} 			{ return createSymbol(sym.SEQ); 		}
-	{DataTypeString}		{ return createSymbol(sym.TYPE_STRING);	}
+	{DataTypeString}		{ return createSymbol(sym.TYPE_STR);	}
     
     //  Other
     {DataTypeTop} 			{ return createSymbol(sym.TOP); 		}
@@ -280,14 +280,15 @@ Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*)
 // ----LITERALS----
 
     //  Primitive
-    {LiteralInt} 			{ return createSymbol(sym.LIT_INT, yytext()); 		}
-	{ValueBool} 			{ return createSymbol(sym.LIT_BOOL, yytext()); 		}
+    {LiteralPosInt} 		{ return createSymbol(sym.LIT_POS_INT, yytext()); 	}
+    {LiteralNegInt}			{ return createSymbol(sym.LIT_NEG_INT, yytext()); 	}
+	{ValueBool} 			{ return createSymbol(sym.VAL_BOOL, yytext()); 		}
 	{LiteralRational} 		{ return createSymbol(sym.LIT_RAT, yytext()); 		}
 	{LiteralFloat} 			{ return createSymbol(sym.LIT_FLOAT, yytext()); 	}
 	{LiteralChar} 			{ return createSymbol(sym.LIT_CHAR, yytext()); 		}
 
     //  Aggregate
-    {LiteralString} 		{ return createSymbol(sym.LIT_STRING,yytext()); 	}
+    {LiteralString} 		{ return createSymbol(sym.LIT_STRING, yytext()); 	}
 
     //  Other
 	{LiteralNull} 			{ return createSymbol(sym.NULL); 					}
