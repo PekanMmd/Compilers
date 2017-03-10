@@ -255,7 +255,7 @@ Parameter_list ::= Parameter COMMA Parameter_list
 
 
 // ----FUNCTION DECLARATIONS----
-Function_body ::= Declaration Function_body
+Function_body ::= Declaration_variable Function_body
                 | Statement_list
                 ;
 
