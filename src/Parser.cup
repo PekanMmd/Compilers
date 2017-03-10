@@ -144,7 +144,7 @@ terminal ERROR, ID, LEN;
   non terminal        Expression, Expression_list;
 
   // operators
-  non terminal        Expression_boolean, Expression_comparison, Expression_numeric, Expression_sequence;
+  non terminal        Expression_boolean, Expression_comparison, Expression_numeric, Expression_sequence, Expression_int, Expression_rat, Expression_float, Expression_unknown;
 
   // functions and fields
   non terminal        Expression_function_predicate, Expression_function_call, Expression_conditioned_function_call, Expression_field_reference;
@@ -178,6 +178,15 @@ terminal ERROR, ID, LEN;
 
 
 
+// ----OPERATORS----
+
+  non terminal        Operator;
+
+  // binary
+  non terminal        Operator_binary_boolean, Operator_binary_comparison, Operator_binary_numeric, Operator_binary_sequence;
+
+  // unary
+  non terminal        Operator_unary_boolean
 
 
 /* -----------------------------------------------------------------------------------------
@@ -228,62 +237,97 @@ Declaration_type_alias ::= ALIAS Type ID SEMICOLON;
 
 // parameters
 Parameter_function ::= ID COLON TYPE;
+
 Parameter_list_function ::= Parameter_function COMMA Parameter_list_function
                           | Parameter_function;Parameter_type
                           ;
+
 Parameter_list_type ::= Parameter_type COMMA Parameter_list_type 
                       | Parameter_type
                       ;
 // variables
-Declaration_variable;
-Declaration_variable_assignment;
+Declaration_variable ::= ID COLON TYPE;
+Declaration_variable_assignment ::= ID COLON TYPE ASSIGNMENT Expression;
 
 
 // ----FUNCTION DECLARATIONS----
-Function_body;
+Function_body ::= Legal_declaration_list_function Statement_list
+                | Legal_declaration_list_function
+                | Statement_list
+                | 
+                ;
 
-Main_body;
+Main_body ::= Legal_declaration_list_main Statement_list
+            | Legal_declaration_list_main
+            | Statement_list;
+            | 
+            ;
 
 // legal declarations
 Legal_declaration_function ::= Declaration_variable
                              | Declaration_variable_assignment
                              ;
 
-Legal_declaration_list_function;
+Legal_declaration_list_function ::= Legal_declaration_function Legal_declaration_list_function
+                                  | Legal_declaration_function
+                                  ;
 
 Legal_declaration_main ::= Declaration_variable
                          | Declaration_variable_assignment
                          ;
 
-Legal_declaration_list_main;
-
+Legal_declaration_list_main ::= Legal_declaration_main Legal_declaration_list_main
+                              | Legal_declaration_main
+                              ;
 
 // ----STATEMENTS----
-Statement;
-Statement_list;
+Statement ::= Statement_Control_Flow
+            | Statement_IO
+            | Statement_assignment
+            | Statement_conditioned_function_call
+            ;
 
+Statement_list ::= Statement Statement_list
+                  | Statement
+                  ;
 // control flow
-Statement_if;
-Statement_if_else;
-Statement_loop;
+Statement_if ::= IF BRACKET_L Expression BRACKET_R THEN Function_body FI;
+                                      
+Statement_if_else ::= IF BRACKET_L Expression BRACKET_R THEN Function_body ELSE Function_body FI;
+
+Statement_loop ::= LOOP Function_body POOL;
 
 // actions
-Statement_return;
-Statement_break;
-Statement_assignment;
-Statement_conditioned_function_call;
+Statement_break ::= BREAK
+                  | BREAK LIT_POS_INT
+                  ;
+
+Statement_return ::= RETURN Expression;
+
+Statement_assignment ::= ID ASSIGNMENT Expression;
+
+Statement_conditioned_function_call ::= Expression_function_predicate Expression_function_call SEMICOLON;
 
 // input/output
-Statement_IO;
-Statement_input;
-Statement_output;
+Statement_IO ::= Statement_input
+                | Statement_output;
+
+Statement_input ::= READ ID;
+
+Statement_output ::= PRINT Expression;
 
 // ----EXPRESSIONS----
-Expression;
-Expression_list;
+Expression ::= ;
 
 // operators
-Expression_boolean;
+Expression_boolean ::= LIT_BOOL
+                     | Expression_boolean Operator_binary_boolean Expression_boolean
+                     | Operator_unary_boolean Expression_boolean
+                     | Expression_unknown
+                     ;
+
+
+
 Expression_comparison;
 Expression_numeric;
 Expression_sequence;
@@ -318,135 +362,59 @@ Literal_string;
 
 
 // ----TYPES----
-Type; 
-
-// Type grouping
-Type_primitive;
-Type_number;
-Type_aggregate;
-Type_defined;
-Type_int;
-
-// aggregate types
-Type_dictionary;
-Type_sequence;
-
-// legal types
-Type_legal_dictionary_key;
-Type_legal_dictionary_value;
-Type_legal_sequence_value;
-
-// Yaya
-Declaration_type ::= TDEF ID CURLY_L Parameter_list_type CURLY_R SEMICOLON;
-
-Declaration_type_alias ::= ALIAS Type ID SEMICOLON;
-
-Declaration_function ::= FDEF ID BRACKET_L Parameter_list_function BRACKET_R CURLY_L Function_body CURLY_R SEMICOLON 
-                        | FDEF ID BRACKET_L Parameter_list_function BRACKET_R CURLY_L Function_body CURLY_R COLON Type SEMICOLON;
-
-
-Declaration_variable_assignment ::= ID COLON TYPE ASSIGNMENT Expression;
-
-Statement_assignment ::= ID ASSIGNMENT Expression;
-
-Declaration_variable ::= ID COLON TYPE;
-
-Statement_IO ::= Statement_input
-                | Statement_output;
-
-Statement_input ::= READ ID;
-
-Statement_output ::= PRINT Expression;
-
-Statement_conditioned_function_call ::= Expression_function_predicate Expression_function_call SEMICOLON;
-
-Expression_function_predicate ::= QUES_MARK Expression QUES_MARK;
-
-Expression_function_call ::= Expression_function_predicate ID BRACKET_L Expression_list BRACKET_R;
-
-Statement_Control_Flow ::= Statement_if
-                          | Statement_if_else
-                          | Statement_loop
-                          | Statement_break
-                          | Statement_return;
-
-Statement_if ::= IF BRACKET_L Expression BRACKET_R THEN Function_body FI;
-                                      
-Statement_if_else ::= IF BRACKET_L Expression BRACKET_R THEN Function_body ELSE Function_body FI;
-
-Statement_loop ::= LOOP Function_body POOL;
-
-Statement_break ::= BREAK
-                  | BREAK LIT_POS_INT;
-
-Statement_return ::= RETURN Expression;
-
-Parameter_list_function ::= Parameter_function COMMA Parameter_list_function
-                          | Parameter_function;
-
-Parameter_list_type ::= Parameter_type COMMA Parameter_list_type 
-                      | Parameter_type;
-
-Parameter_function ::= ID COLON TYPE;
-
-Parameter_type ::= ID COLON TYPE;
-
-Function_body ::= Legal_declaration_list_function Statement_list
-                | Legal_declaration_list_function
-                | Statement_list
-                | ;
-
-Main_body ::= Legal_declaration_list_main Statement_list
-            | Legal_declaration_list_main
-            | Statement_list;
-            | ;
-
-Statement ::= Statement_Control_Flow
-            | Statement_IO
-            | Statement_assignment
-            | Statement_conditioned_function_call;
-
-
-Statement_list ::= Statement Statement_list
-                  | Statement;
-
-Legal_declaration_list_function ::= Legal_declaration_function Legal_declaration_list_function
-                                  | Legal_declaration_function;
-
-Legal_declaration_list_main ::= Legal_declaration_main Legal_declaration_list_main
-                              | Legal_declaration_main;
-
 Type ::= Type_primitive
        | Type_aggregate
        | Type_defined
        | TOP;
 
+// Type grouping
 Type_primitive ::= Type_number
                   | TYPE_CHAR
-                  | TYPE_BOOL;
+                  | TYPE_BOOL
+                  ;
 
 Type_number ::= TYPE_INT
               | TYPE_FLOAT
-              | TYPE_RAT;
+              | TYPE_RAT
+              ;
 
 Type_aggregate ::= Type_string
                  | Type_sequence
-                 | Type_dictionary;
+                 | Type_dictionary
+                 ;
 
-Type_string ::= TYPE_STR
-              | SEQ ANGLE_L TYPE_CHAR ANGLE_R;
+Type_defined ::= ID; 
+
+// aggregate types
+Type_dictionary ::= DICT ANGLE_L Type COMMA Type ANGLE_R;
 
 Type_sequence ::= SEQ ANGLE_L Type ANGLE_R;
 
-Type_dictionary ::= DICT ANGLE_L Type COMMA Type ANGLE_R;
-
-Type_defined ::= ID;
-
+// legal types
 Type_legal_dictionary_key ::= Type;
 
 Type_legal_sequence_value ::= Type;
 
 Type_legal_dictionary_value ::= Type;
+
+Type_string ::= TYPE_STR
+              | SEQ ANGLE_L TYPE_CHAR ANGLE_R
+              ;
+
+// ----OPERATORS----
+Operator;
+
+// binary
+Operator_binary_boolean;
+Operator_binary_comparison;
+Operator_binary_numeric;
+Operator_binary_sequence;
+
+// unary
+Operator_unary_boolean ::= NOT;
+
+// Yaya
+
 
 
 
