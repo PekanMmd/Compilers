@@ -284,15 +284,23 @@ Statement_control_flow ::= Statement_if
                          | Statement_loop
                          ;
 
-Statement_if ::= IF BRACKET_L Expression BRACKET_R THEN Statement_list FI;
+Statement_if ::= IF BRACKET_L Expression BRACKET_R THEN Statement_list FI
+               | IF BRACKET_L Expression BRACKET_R THEN FI
+               ;
                                       
-Statement_if_else ::= IF BRACKET_L Expression BRACKET_R THEN Statement_list ELSE Statement_list FI;
+Statement_if_else ::= IF BRACKET_L Expression BRACKET_R THEN Statement_list ELSE Statement_list FI
+                    | IF BRACKET_L Expression BRACKET_R THEN ELSE Statement_list FI
+                    ;
 
-Statement_loop ::= LOOP Statement_list POOL;
+Statement_loop ::= LOOP Statement_list POOL
+                 | LOOP POOL
+                 ;
 
 // actions
 Statement_break ::= BREAK SEMICOLON
                   | BREAK LIT_POS_INT SEMICOLON
+                  | BREAK Expression_numeric SEMICOLON
+                  | BREAK Expression_unknown SEMICOLON
                   ;
 
 Statement_return ::= RETURN Expression SEMICOLON
@@ -340,10 +348,7 @@ Expression_numeric ::= Expression Operator_binary_numeric Expression
                      | Expression_sequence_length
                      ;
 
-Expression_negative_number ::= MINUS LIT_POS_INT
-                             | MINUS LIT_RAT
-                             | MINUS LIT_FLOAT
-                             ;
+Expression_negative_number ::= MINUS Expression;
 
 Expression_sequence ::= Expression_sequence_slice
                       | Expression CONCAT Expression
@@ -365,8 +370,6 @@ Expression_conditioned_function_call ::= Expression_function_predicate Expressio
 Expression_field_reference ::= Expression DOT ID;
 
 Expression_sequence_length ::= Expression DOT_LEN;
-
-//Expression_sequence_length ::= Expression_sequence DOT_LEN;
 
 // aggregate type value reference
 Expression_dictionary_sequence_index ::= Expression BRACKET_SL Expression BRACKET_SR;
@@ -408,9 +411,7 @@ Literal ::= Literal_Integer
           ;
 
 // primitive literals
-Literal_Integer ::= LIT_POS_INT
-                  | LIT_NEG_INT
-                  ;
+Literal_Integer ::= LIT_POS_INT;
 
 // aggregate literals
 
@@ -448,7 +449,6 @@ Type_number ::= TYPE_INT
               ;
 
 Type_aggregate ::= Type_sequence
-                 //| TYPE_STR
                  | Type_dictionary
                  ;
 
