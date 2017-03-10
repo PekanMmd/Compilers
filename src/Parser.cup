@@ -292,8 +292,8 @@ Statement ::= Statement_Control_Flow
             ;
 
 Statement_list ::= Statement Statement_list
-                  | Statement
-                  ;
+                 | Statement
+                 ;
 // control flow
 Statement_if ::= IF BRACKET_L Expression BRACKET_R THEN Function_body FI;
                                       
@@ -330,9 +330,13 @@ Expression_boolean ::= LIT_BOOL
                      | Expression_unknown
                      ;
 
-Expression_comparison;
+Expression_comparison ::= Expression_int Operator_binary_comparison Expression_int
+                        | Expression_rat Operator_binary_comparison Expression_rat
+                        | Expression_float Operator_binary_comparison Expression_float
+                        | Expression_boolean Operator_binary_comparison Expression_boolean
+                        ;
 
-Expression_int ::= Literal_Integer;
+Expression_int ::= Literal_Integer ;
 
 Expression_rat ::= Literal_rational
                  | Expression_rat Operator_binary_numeric Expression_rat
@@ -384,11 +388,11 @@ Literal_string;
 
 // numerical literals
 Literal_rational ::= LIT_RAT
-                   | LIT_INT
+                   | Literal_Integer
                    ;
 
 Literal_float    ::= LIT_FLOAT
-                   | LIT_INT
+                   | Literal_Integer
                    ;
 
 // ----TYPES----
