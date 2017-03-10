@@ -19,3 +19,7 @@ Solution  : We will be allowing nested aggregate data types as most programming 
 Paragraph : 14
 Problem   : It is not specified whether or not a function may have local variable declarations without any statements or to be completely empty.
 Solution  : An empty function serves no purpose so it will not be allowed.
+
+Paragraph : 20
+Problem   : It is not specified whether or not main functions may include function definitions.
+Solution  : Functions may as well be specified outside of main so we will not allow it.

@@ -18,6 +18,8 @@ import java.util.*;
 %column
 
 %{
+	private int loop_counter = 0;
+
 	private Symbol createSymbol(int type) {
 		return new Symbol(type, yyline, yycolumn);
 	}
@@ -39,7 +41,7 @@ import java.util.*;
  * States
  * -----------------------------------------------------------------------------------------
  */
-%xstate STATE_COMMENT_SINGLE, STATE_COMMENT_MULTI
+%xstate STATE_COMMENT_SINGLE, STATE_COMMENT_MULTI, STATE_LOOP
 
 /* -----------------------------------------------------------------------------------------
  * Macros
@@ -241,10 +243,10 @@ Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*)
     {KeywordIfTerminator} 	{ return createSymbol(sym.FI); 			}
 	{KeywordThen} 			{ return createSymbol(sym.THEN); 		}
 	{KeywordElse} 			{ return createSymbol(sym.ELSE); 		}
-	{KeywordLoop} 			{ return createSymbol(sym.LOOP); 		}
-	{KeywordLoopTerminator} { return createSymbol(sym.POOL); 		}
+	{KeywordLoop} 			{ loop_counter++; return createSymbol(sym.LOOP); 		}
+	{KeywordLoopTerminator} { loop_counter--; return createSymbol(sym.POOL); 		}
 	{KeywordReturn} 		{ return createSymbol(sym.RETURN); 		}
-	{KeywordBreak} 			{ return createSymbol(sym.BREAK); 		}
+	{KeywordBreak} 			{ if (loop_counter > 0) { return createSymbol(sym.BREAK); } else { return createSymbol(sym.ERROR)}		}
       
     //  IO
     {KeywordRead} 			{ return createSymbol(sym.READ); 		}
