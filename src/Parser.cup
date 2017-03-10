@@ -427,7 +427,7 @@ Type_number ::= TYPE_INT
               ;
 
 Type_aggregate ::= Type_sequence
-                 | TYPE_STR
+                 //| TYPE_STR
                  | Type_dictionary
                  ;
 
