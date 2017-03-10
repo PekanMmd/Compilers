@@ -24,4 +24,6 @@ Paragraph : Table 2
 Problem   : It is not clear whether numeric operators can be applied to two values of differing numeric types, e.g. 5 + 0.2.
 Solution  : Like most other languages, float and int will be compatible and produce a float. rat and int will produce a rat. float and rat will not be compatible since floats have limited precision and may not accurately represent a rat.
 
-
+Paragraph : 7
+Problem   : It isn't specified whether or not a n integer literal (e.g. 11) should be accepted as a valid rat or float literal.
+Solution  : Many other languages automatically convert ints to other types like float so we will allow it.
