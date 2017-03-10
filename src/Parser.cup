@@ -272,6 +272,7 @@ Statement ::= Statement_control_flow
             | Statement_conditioned_function_call
             | Statement_return
             | Statement_break
+            | SEMICOLON
             ;
 
 Statement_list ::= Statement Statement_list
@@ -305,7 +306,7 @@ Statement_assignment ::= ID ASSIGNMENT Expression SEMICOLON
                        ;
 
 Statement_conditioned_function_call ::= Expression_conditioned_function_call SEMICOLON
-                                      | NOP
+                                      | NOP SEMICOLON
                                       ;
 
 // input/output
