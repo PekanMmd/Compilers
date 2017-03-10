@@ -355,7 +355,6 @@ Expression_unknown ::= ID
                      | Expression_dictionary_sequence_index
                      ;
 
-
 // functions and fields
 Expression_function_predicate ::= QUES_MARK Expression QUES_MARK;
 
@@ -367,6 +366,8 @@ Expression_field_reference ::= Expression DOT ID;
 
 Expression_sequence_length ::= Expression DOT LEN;
 
+Expression_sequence_length ::= Expression_sequence DOT LEN;
+
 // aggregate type value reference
 Expression_dictionary_sequence_index ::= Expression BRACKET_SL Expression BRACKET_SR;
 
@@ -376,6 +377,7 @@ Expression_sequence_slice ::= Expression_sequence_left_slice
                             | Expression_sequence_dual_slice
                             | Expression_sequence_empty_slice
                             ;
+
 
 Expression_sequence_left_slice  ::= Expression BRACKET_SL LIT_POS_INT COLON BRACKET_SR;
 Expression_sequence_right_slice ::= Expression BRACKET_SL COLON Expression BRACKET_SR;
@@ -401,6 +403,7 @@ Literal_Integer ::= LIT_POS_INT
                   ;
 
 // aggregate literals
+
 Dictionary_entry ::= Expression COLON Expression;
 
 Dictionary_entry_list ::= Dictionary_entry COMMA Dictionary_entry_list
@@ -458,6 +461,7 @@ Operator_binary_comparison ::= ANGLE_L // less than
                              | EQUAL
                              | NOT_EQUAL
                              ;
+
 
 Operator_binary_numeric ::= PLUS
                           | MINUS
