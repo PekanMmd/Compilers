@@ -998,7 +998,7 @@ class Lexer implements java_cup.runtime.Scanner {
             }
           case 128: break;
           case 64: 
-            { if (loop_counter > 0) { return createSymbol(sym.BREAK); } else { return createSymbol(sym.ERROR)}
+            { if (loop_counter > 0) { return createSymbol(sym.BREAK); } else { return createSymbol(sym.ERROR); }
             }
           case 129: break;
           case 65: 

@@ -246,7 +246,7 @@ Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*)
 	{KeywordLoop} 			{ loop_counter++; return createSymbol(sym.LOOP); 		}
 	{KeywordLoopTerminator} { loop_counter--; return createSymbol(sym.POOL); 		}
 	{KeywordReturn} 		{ return createSymbol(sym.RETURN); 		}
-	{KeywordBreak} 			{ if (loop_counter > 0) { return createSymbol(sym.BREAK); } else { return createSymbol(sym.ERROR)}		}
+	{KeywordBreak} 			{ if (loop_counter > 0) { return createSymbol(sym.BREAK); } else { return createSymbol(sym.ERROR); }		}
       
     //  IO
     {KeywordRead} 			{ return createSymbol(sym.READ); 		}
