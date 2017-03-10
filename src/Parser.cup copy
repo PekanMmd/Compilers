@@ -68,7 +68,7 @@ terminal ERROR, ID, DOT_LEN;
       terminal  LIT_STRING;
 
       //  Other
-      terminal  NULL, NOP;
+      terminal  NULL;
 
 // ----OPERATORS----
 
@@ -141,7 +141,7 @@ terminal ERROR, ID, DOT_LEN;
   non terminal        Expression, Expression_list;
 
   // operators
-  non terminal        Expression_boolean, Expression_numeric, Expression_sequence, Expression_negative_number;
+  non terminal        Expression_boolean, Expression_numeric, Expression_sequence;
 
   // types
   non terminal        Expression_unknown;
@@ -302,9 +302,7 @@ Statement_assignment ::= ID ASSIGNMENT Expression SEMICOLON
                        | Expression ASSIGNMENT Expression SEMICOLON
                        ;
 
-Statement_conditioned_function_call ::= Expression_conditioned_function_call SEMICOLON
-                                      | NOP
-                                      ;
+Statement_conditioned_function_call ::= Expression_conditioned_function_call SEMICOLON;
 
 // input/output
 Statement_IO ::= Statement_input
@@ -318,7 +316,6 @@ Statement_output ::= PRINT Expression SEMICOLON;
 // ----EXPRESSIONS----
 Expression ::= Expression_boolean 
              | Expression_numeric
-             | Expression_negative_number
              | Expression_sequence
              | Expression_unknown
              | BRACKET_L Expression BRACKET_R
@@ -338,12 +335,10 @@ Expression_boolean ::= Expression Operator_binary_boolean Expression
 
 Expression_numeric ::= Expression Operator_binary_numeric Expression
                      | Expression_sequence_length
+                     | MINUS LIT_POS_INT
+                     | MINUS LIT_RAT
+                     | MINUS LIT_FLOAT
                      ;
-
-Expression_negative_number ::= MINUS LIT_POS_INT
-                             | MINUS LIT_RAT
-                             | MINUS LIT_FLOAT
-                             ;
 
 Expression_sequence ::= Expression_sequence_slice
                       | Expression CONCAT Expression
@@ -379,19 +374,9 @@ Expression_sequence_slice ::= Expression_sequence_left_slice
                             ;
 
 
-Expression_sequence_left_slice  ::= Expression BRACKET_SL LIT_POS_INT COLON BRACKET_SR
-                                  | Expression BRACKET_SL Expression_numeric COLON BRACKET_SR
-                                  | Expression BRACKET_SL Expression_unknown COLON BRACKET_SR
-                                  ;
-
+Expression_sequence_left_slice  ::= Expression BRACKET_SL LIT_POS_INT COLON BRACKET_SR;
 Expression_sequence_right_slice ::= Expression BRACKET_SL COLON Expression BRACKET_SR;
-
-Expression_sequence_dual_slice  ::= Expression BRACKET_SL LIT_POS_INT COLON Expression BRACKET_SR
-                                  | Expression BRACKET_SL Expression_numeric COLON Expression BRACKET_SR
-                                  | Expression BRACKET_SL Expression_unknown COLON Expression BRACKET_SR 
-                                  ;
-
-
+Expression_sequence_dual_slice  ::= Expression BRACKET_SL LIT_POS_INT COLON Expression BRACKET_SR;
 Expression_sequence_empty_slice ::= Expression BRACKET_SL COLON BRACKET_SR;
 
 

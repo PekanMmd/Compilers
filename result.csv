@@ -16,7 +16,7 @@ Syntax error at line 2, column 2, token: 28 Couldn't repair and continue parse a
 tests/open/n-main-return.s
 Syntax error at line 7, column 2, token: 14 Couldn't repair and continue parse at character 6 of input
 tests/open/n-multiple-assignment.s
-Syntax error at line 5, column 9, token: 63 Couldn't repair and continue parse at character 4 of input
+Syntax error at line 5, column 9, token: 64 Couldn't repair and continue parse at character 4 of input
 tests/open/n-nested-type-def0.s
 Syntax error at line 2, column 18, token: 13 Couldn't repair and continue parse at character 1 of input
 tests/open/n-no-main.s

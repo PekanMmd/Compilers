@@ -7,34 +7,35 @@
 public class sym {
   /* terminals */
   public static final int SEQ = 39;
-  public static final int DIVIDE = 56;
+  public static final int DIVIDE = 57;
   public static final int LIT_POS_INT = 42;
-  public static final int POWER = 57;
-  public static final int ASSIGNMENT = 63;
-  public static final int CONCAT = 59;
+  public static final int POWER = 58;
+  public static final int ASSIGNMENT = 64;
+  public static final int CONCAT = 60;
   public static final int POOL = 27;
   public static final int LIT_FLOAT = 45;
   public static final int LIT_NEG_INT = 43;
-  public static final int NOT_EQUAL = 62;
-  public static final int MINUS = 54;
+  public static final int NOT_EQUAL = 63;
+  public static final int MINUS = 55;
   public static final int BRACKET_SR = 8;
   public static final int LIT_RAT = 46;
-  public static final int AND = 50;
-  public static final int NOT = 49;
+  public static final int AND = 51;
+  public static final int NOT = 50;
   public static final int SEMICOLON = 13;
   public static final int BRACKET_SL = 7;
   public static final int ANGLE_R = 9;
   public static final int TYPE_STR = 37;
-  public static final int IN = 58;
-  public static final int OR = 51;
+  public static final int NOP = 49;
+  public static final int IN = 59;
+  public static final int OR = 52;
   public static final int TDEF = 19;
   public static final int COMMA = 16;
   public static final int ANGLE_L = 10;
-  public static final int IMPLIES = 52;
+  public static final int IMPLIES = 53;
   public static final int FI = 23;
   public static final int TYPE_INT = 33;
-  public static final int MULTIPLY = 55;
-  public static final int PLUS = 53;
+  public static final int MULTIPLY = 56;
+  public static final int PLUS = 54;
   public static final int LOOP = 26;
   public static final int MAIN = 21;
   public static final int IF = 22;
@@ -43,11 +44,11 @@ public class sym {
   public static final int BRACKET_R = 6;
   public static final int EOF = 0;
   public static final int RETURN = 28;
-  public static final int EQUAL = 61;
+  public static final int EQUAL = 62;
   public static final int BRACKET_L = 5;
   public static final int error = 1;
   public static final int LIT_STRING = 47;
-  public static final int LESS_OR_EQ = 60;
+  public static final int LESS_OR_EQ = 61;
   public static final int NULL = 48;
   public static final int LIT_CHAR = 44;
   public static final int BREAK = 29;
@@ -120,6 +121,7 @@ public class sym {
   "LIT_RAT",
   "LIT_STRING",
   "NULL",
+  "NOP",
   "NOT",
   "AND",
   "OR",

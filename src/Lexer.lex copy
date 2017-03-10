@@ -93,7 +93,6 @@ KeywordPrint 			= "print"
 KeywordBreak			= "break"
 
 KeywordNull 			= "null"
-KeywordNOP				= "NOP"
 
 //Paragraph 3 -----------------------------------------------
 // ----------------------------------------------------------
@@ -232,8 +231,6 @@ Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*)
 
 
 // ----KEYWORDS----
-
-	KeywordNOP 				{ return createSymbol(sym.NOP);			}
 
     //  Declaration
     {KeywordAlias} 			{ return createSymbol(sym.ALIAS); 		}
