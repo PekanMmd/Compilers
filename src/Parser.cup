@@ -402,10 +402,18 @@ Type_string ::= TYPE_STR
               ;
 
 // ----OPERATORS----
-Operator;
+Operator ::= Operator_binary_boolean;
+            | Operator_binary_comparison;
+            | Operator_binary_numeric;
+            | Operator_binary_sequence
+            ;
 
 // binary
-Operator_binary_boolean;
+Operator_binary_boolean ::= AND
+                          | OR
+                          | IMPLIES
+                          ;
+
 Operator_binary_comparison;
 Operator_binary_numeric;
 Operator_binary_sequence;
