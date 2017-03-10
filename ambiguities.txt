@@ -20,5 +20,8 @@ Paragraph : 14
 Problem   : It is not specified whether or not a function may have local variable declarations without any statements or to be completely empty.
 Solution  : Although it would be silly to do this in practice our parser will allow it. This will be the same for main.
 
+Paragraph : Table 2
+Problem   : It is not clear whether numeric operators can be applied to two values of differing numeric types, e.g. 5 + 0.2.
+Solution  : Like most other languages, float and int will be compatible and produce a float. rat and int will produce a rat. float and rat will not be compatible since floats have limited precision and may not accurately represent a rat.
 
 

@@ -281,7 +281,7 @@ Identifier = (([a-z] | [A-Z]) ("_" | [0-9] | [a-z] | [A-Z])*)
 
     //  Primitive
     {LiteralInt} 			{ return createSymbol(sym.LIT_INT, yytext()); 		}
-	{ValueBool} 			{ return createSymbol(sym.VAL_BOOL, yytext()); 		}
+	{ValueBool} 			{ return createSymbol(sym.LIT_BOOL, yytext()); 		}
 	{LiteralRational} 		{ return createSymbol(sym.LIT_RAT, yytext()); 		}
 	{LiteralFloat} 			{ return createSymbol(sym.LIT_FLOAT, yytext()); 	}
 	{LiteralChar} 			{ return createSymbol(sym.LIT_CHAR, yytext()); 		}

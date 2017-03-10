@@ -62,7 +62,7 @@ terminal ERROR, ID, LEN;
 // ----LITERALS----
 
       //  Primitive
-      terminal  VAL_BOOL, LIT_INT, LIT_CHAR, LIT_FLOAT, LIT_RAT;
+      terminal  LIT_BOOL, LIT_INT, LIT_CHAR, LIT_FLOAT, LIT_RAT;
 
       //  Aggregate
       terminal  LIT_STRING;
@@ -143,7 +143,7 @@ terminal ERROR, ID, LEN;
   non terminal        Expression, Expression_list;
 
   // operators
-  non terminal        Expression_boolean, Expression_comparison, Expression_numeric, Expression_sequence;
+  non terminal        Expression_boolean, Expression_comparison, Expression_numeric, Expression_sequence, Expression_int, Expression_rat, Expression_float, Expression_unknown;
 
   // functions and fields
   non terminal        Expression_function_predicate, Expression_function_call, Expression_conditioned_function_call, Expression_field_reference;
@@ -178,6 +178,15 @@ terminal ERROR, ID, LEN;
 
 
 
+// ----OPERATORS----
+
+  non terminal        Operator;
+
+  // binary
+  non terminal        Operator_binary_boolean, Operator_binary_comparison, Operator_binary_numeric, Operator_binary_sequence;
+
+  // unary
+  non terminal        Operator_unary_boolean
 
 
 /* -----------------------------------------------------------------------------------------
@@ -275,11 +284,17 @@ Statement_input;
 Statement_output;
 
 // ----EXPRESSIONS----
-Expression;
-Expression_list;
+Expression ::= ;
 
 // operators
-Expression_boolean;
+Expression_boolean ::= LIT_BOOL
+                     | Expression_boolean Operator_binary_boolean Expression_boolean
+                     | Operator_unary_boolean Expression_boolean
+                     | Expression_unknown
+                     ;
+
+
+
 Expression_comparison;
 Expression_numeric;
 Expression_sequence;
@@ -331,6 +346,21 @@ Type_sequence;
 Type_legal_dictionary_key;
 Type_legal_dictionary_value;
 Type_legal_sequence_value;
+
+
+
+
+// ----OPERATORS----
+Operator;
+
+// binary
+Operator_binary_boolean;
+Operator_binary_comparison;
+Operator_binary_numeric;
+Operator_binary_sequence;
+
+// unary
+Operator_unary_boolean ::= NOT;
 
 // Yaya
 
