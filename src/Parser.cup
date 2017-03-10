@@ -54,7 +54,7 @@ terminal  EOF, ERROR, ID, LEN;
       terminal  TYPE_BOOL, TYPE_INT, TYPE_FLOAT, TYPE_RAT, TYPE_CHAR;
 
       //  Aggregate
-      terminal  TYPE_STRING, DICT, SEQ;
+      terminal  TYPE_STR, DICT, SEQ;
 
       //  Other
       terminal  TOP;
@@ -62,7 +62,7 @@ terminal  EOF, ERROR, ID, LEN;
 // ----LITERALS----
 
       //  Primitive
-      terminal  VAL_BOOL, LIT_INT, LIT_CHAR, LIT_FLOAT, LIT_RAT;
+      terminal  VAL_BOOL, LIT_POS_INT, LIT_NEG_INT, LIT_CHAR, LIT_FLOAT, LIT_RAT;
 
       //  Aggregate
       terminal  LIT_STRING;
@@ -108,14 +108,14 @@ non terminal        Legal_declaration_function, Legal_declaration_list_function,
 
 // ----STATEMENTS----
 non terminal        Statement, Statement_list;
-non terminal        Statement_if, Statement_if_else, Statement_loop;
-non terminal        Statement_return, Statement_break, Statement_assignment, Statement_conditioned_function_call
+non terminal        Statement_Control_Flow, Statement_if, Statement_if_else, Statement_loop;
+non terminal        Statement_return, Statement_break, Statement_assignment, Statement_conditioned_function_call;
 non terminal        Statement_IO, Statement_input, Statement_output;
 
 // ----EXPRESSIONS----
-non terminal        Expression, Expression_list;
+non terminal        Expression;
 non terminal        Expression_boolean, Expression_comparison, Expression_numeric, Expression_sequence;
-non terminal        Expression_function_predicate, Expression_function_call, Expression_conditioned_function_call,Expression_field_reference;
+non terminal        Expression_function_predicate, Expression_function_call, Expression_conditioned_function_call, Expression_field_reference;
 non terminal        Expression_dictionary_key, Expression_sequence_index; 
 non terminal        Expression_sequence_slice, Expression_sequence_left_slice, Expression_sequence_right_slice, Expression_sequence_dual_slice, Expression_sequence_empty_slice;
 
@@ -152,6 +152,123 @@ precedence left TIMES;
 
 
 // Yaya
+Declaration_type ::= TDEF ID CURLY_L Parameter_list_type CURLY_R SEMICOLON;
+
+Declaration_type_alias ::= ALIAS Type ID SEMICOLON;
+
+Declaration_function ::= FDEF ID BRACKET_L Parameter_list_function BRACKET_R CURLY_L Function_body CURLY_R SEMICOLON 
+                        | FDEF ID BRACKET_L Parameter_list_function BRACKET_R CURLY_L Function_body CURLY_R COLON Type SEMICOLON;
+
+
+Declaration_variable_assignment ::= ID COLON TYPE ASSIGNMENT Expression;
+
+Statement_assignment ::= ID ASSIGNMENT Expression;
+
+Declaration_variable ::= ID COLON TYPE;
+
+Statement_IO ::= Statement_input
+                | Statement_output;
+
+Statement_input ::= READ ID;
+
+Statement_output ::= PRINT Expression;
+
+Statement_conditioned_function_call ::= Expression_function_predicate Expression_function_call SEMICOLON;
+
+Expression_function_predicate ::= QUES_MARK Expression QUES_MARK;
+
+Expression_function_call ::= Expression_function_predicate ID BRACKET_L Expression_list BRACKET_R;
+
+Statement_Control_Flow ::= Statement_if
+                          | Statement_if_else
+                          | Statement_loop
+                          | Statement_break
+                          | Statement_return;
+
+Statement_if ::= IF BRACKET_L Expression BRACKET_R THEN Function_body FI;
+                                      
+Statement_if_else ::= IF BRACKET_L Expression BRACKET_R THEN Function_body ELSE Function_body FI;
+
+Statement_loop ::= LOOP Function_body POOL;
+
+Statement_break ::= BREAK
+                  | BREAK LIT_POS_INT;
+
+Statement_return ::= RETURN Expression;
+
+Parameter_list_function ::= Parameter_function COMMA Parameter_list_function
+                          | Parameter_function;
+
+Parameter_list_type ::= Parameter_type COMMA Parameter_list_type 
+                      | Parameter_type;
+
+Parameter_function ::= ID COLON TYPE;
+
+Parameter_type ::= ID COLON TYPE;
+
+Function_body ::= Legal_declaration_list_function Statement_list
+                | Legal_declaration_list_function
+                | Statement_list
+                | ;
+
+Main_body ::= Legal_declaration_list_main Statement_list
+            | Legal_declaration_list_main
+            | Statement_list;
+            | ;
+
+Statement ::= Statement_Control_Flow
+            | Statement_IO
+            | Statement_assignment
+            | Statement_conditioned_function_call;
+
+
+Statement_list ::= Statement Statement_list
+                  | Statement;
+
+Legal_declaration_list_function ::= Legal_declaration_function Legal_declaration_list_function
+                                  | Legal_declaration_function;
+
+Legal_declaration_list_main ::= Legal_declaration_main Legal_declaration_list_main
+                              | Legal_declaration_main;
+
+Type ::= Type_primitive
+       | Type_aggregate
+       | Type_defined
+       | TOP;
+
+Type_primitive ::= Type_number
+                  | TYPE_CHAR
+                  | TYPE_BOOL;
+
+Type_number ::= TYPE_INT
+              | TYPE_FLOAT
+              | TYPE_RAT;
+
+Type_aggregate ::= Type_string
+                 | Type_sequence
+                 | Type_dictionary;
+
+Type_string ::= TYPE_STR
+              | SEQ ANGLE_L TYPE_CHAR ANGLE_R;
+
+Type_sequence ::= SEQ ANGLE_L Type ANGLE_R;
+
+Type_dictionary ::= DICT ANGLE_L Type COMMA Type ANGLE_R;
+
+Type_defined ::= ID;
+
+Type_legal_dictionary_key ::= Type;
+
+Type_legal_sequence_value ::= Type;
+
+Type_legal_dictionary_value ::= Type;
+
+
+
+
+
+
+
 
 
 
